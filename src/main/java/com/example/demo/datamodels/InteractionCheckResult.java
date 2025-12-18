@@ -1,18 +1,30 @@
 package com.example.project.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "interaction_check_results")
 public class InteractionCheckResult {
+    
+    public enum CheckSeverity {
+        NONE("No Interactions"),
+        MINOR("Minor Interactions"),
+        MODERATE("Moderate Interactions"),
+        SEVERE("Severe Interactions"),
+        CRITICAL("Critical Interactions");
+        
+        private final String displayName;
+        
+        CheckSeverity(String displayName) {
+            this.displayName = displayName;
+        }
+        
+        public String getDisplayName() {
+            return displayName;
+        }
+    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +33,43 @@ public class InteractionCheckResult {
     @Column(name = "medications", columnDefinition = "TEXT", nullable = false)
     private String medications; // comma-separated medication names
     
+    @Column(name = "medication_ids", columnDefinition = "TEXT")
+    private String medicationIds; // comma-separated medication IDs
+    
     @Column(name = "interactions", columnDefinition = "TEXT", nullable = false)
     private String interactions; // JSON summary
+    
+    @Column(name = "severity_level", length = 20)
+    @Enumerated(EnumType.STRING)
+    private CheckSeverity severityLevel;
     
     @Column(name = "checked_at", nullable = false)
     private LocalDateTime checkedAt;
     
-    // PrePersist callback to set checkedAt automatically
+    @Column(name = "user_id")
+    private Long userId;
+    
+    @Column(name = "user_name", length = 100)
+    private String userName;
+    
+    @Column(name = "interaction_count")
+    private Integer interactionCount = 0;
+    
+    @Column(name = "check_duration_ms")
+    private Long checkDurationMs; // Time taken for check in milliseconds
+    
+    // PrePersist callback
     @PrePersist
     protected void onCreate() {
-        checkedAt = LocalDateTime.now();
+        if (checkedAt == null) {
+            checkedAt = LocalDateTime.now();
+        }
+        if (severityLevel == null) {
+            severityLevel = CheckSeverity.NONE;
+        }
+        if (interactionCount == null) {
+            interactionCount = 0;
+        }
     }
     
     // Constructors
@@ -40,6 +79,19 @@ public class InteractionCheckResult {
     public InteractionCheckResult(String medications, String interactions) {
         this.medications = medications;
         this.interactions = interactions;
+        this.checkedAt = LocalDateTime.now();
+    }
+    
+    public InteractionCheckResult(String medications, String medicationIds, 
+                                 String interactions, CheckSeverity severityLevel,
+                                 Long userId, String userName, Integer interactionCount) {
+        this.medications = medications;
+        this.medicationIds = medicationIds;
+        this.interactions = interactions;
+        this.severityLevel = severityLevel;
+        this.userId = userId;
+        this.userName = userName;
+        this.interactionCount = interactionCount;
         this.checkedAt = LocalDateTime.now();
     }
     
@@ -60,12 +112,28 @@ public class InteractionCheckResult {
         this.medications = medications;
     }
     
+    public String getMedicationIds() {
+        return medicationIds;
+    }
+    
+    public void setMedicationIds(String medicationIds) {
+        this.medicationIds = medicationIds;
+    }
+    
     public String getInteractions() {
         return interactions;
     }
     
     public void setInteractions(String interactions) {
         this.interactions = interactions;
+    }
+    
+    public CheckSeverity getSeverityLevel() {
+        return severityLevel;
+    }
+    
+    public void setSeverityLevel(CheckSeverity severityLevel) {
+        this.severityLevel = severityLevel;
     }
     
     public LocalDateTime getCheckedAt() {
@@ -76,19 +144,73 @@ public class InteractionCheckResult {
         this.checkedAt = checkedAt;
     }
     
+    public Long getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    
+    public String getUserName() {
+        return userName;
+    }
+    
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    
+    public Integer getInteractionCount() {
+        return interactionCount != null ? interactionCount : 0;
+    }
+    
+    public void setInteractionCount(Integer interactionCount) {
+        this.interactionCount = interactionCount;
+    }
+    
+    public Long getCheckDurationMs() {
+        return checkDurationMs;
+    }
+    
+    public void setCheckDurationMs(Long checkDurationMs) {
+        this.checkDurationMs = checkDurationMs;
+    }
+    
+    // Helper methods
+    public boolean hasInteractions() {
+        return interactionCount != null && interactionCount > 0;
+    }
+    
+    public boolean isCritical() {
+        return severityLevel == CheckSeverity.CRITICAL || severityLevel == CheckSeverity.SEVERE;
+    }
+    
+    public boolean isRecent(int hours) {
+        return checkedAt != null && 
+               checkedAt.isAfter(LocalDateTime.now().minusHours(hours));
+    }
+    
     // equals and hashCode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InteractionCheckResult that = (InteractionCheckResult) o;
-        return Objects.equals(id, that.id) && 
+        
+        if (id != null && that.id != null) {
+            return Objects.equals(id, that.id);
+        }
+        
+        return Objects.equals(medications, that.medications) &&
                Objects.equals(checkedAt, that.checkedAt);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, checkedAt);
+        if (id != null) {
+            return Objects.hash(id);
+        }
+        return Objects.hash(medications, checkedAt);
     }
     
     @Override
@@ -96,7 +218,8 @@ public class InteractionCheckResult {
         return "InteractionCheckResult{" +
                 "id=" + id +
                 ", medications='" + medications + '\'' +
-                ", interactions='" + interactions + '\'' +
+                ", severityLevel=" + severityLevel +
+                ", interactionCount=" + interactionCount +
                 ", checkedAt=" + checkedAt +
                 '}';
     }
