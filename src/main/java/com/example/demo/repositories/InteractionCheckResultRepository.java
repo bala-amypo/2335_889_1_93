@@ -16,9 +16,6 @@ import java.util.List;
 @Repository
 public interface InteractionCheckResultRepository extends JpaRepository<InteractionCheckResult, Long> {
     
-    // Basic CRUD operations provided by JpaRepository:
-    // - save(), saveAll(), findById(), findAll(), deleteById(), delete(), count(), existsById()
-    
     // Find results by date range
     List<InteractionCheckResult> findByCheckedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
     
@@ -32,17 +29,14 @@ public interface InteractionCheckResultRepository extends JpaRepository<Interact
     
     // Pagination support
     Page<InteractionCheckResult> findAll(Pageable pageable);
-    
     Page<InteractionCheckResult> findAllByOrderByCheckedAtDesc(Pageable pageable);
     
     // Find by user (if you have user tracking)
     List<InteractionCheckResult> findByUserIdOrderByCheckedAtDesc(Long userId);
-    
     Page<InteractionCheckResult> findByUserId(Long userId, Pageable pageable);
     
     // Count methods
     long countByCheckedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
-    
     long countByUserId(Long userId);
     
     // Delete old results (cleanup)
