@@ -69,8 +69,8 @@ public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredie
     
     List<ActiveIngredient> findAllByOrderByNameDesc();
     
-    // Find with pagination
-    Page<ActiveIngredient> findAll(Pageable pageable);
+    // // Find with pagination
+    // Page<ActiveIngredient> findAll(Pageable pageable);
     
     Page<ActiveIngredient> findAllByOrderByName(Pageable pageable);
     
