@@ -1,4 +1,4 @@
-]\;
+package com.example.demo.repositories;
 
 import com.example.demo.models.Medication;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MedicationRepository extends JpaRepository<Medication, Long> {
+public interface MedicationRepository extends JpaRepository<Medication, Long> { 
+
     
     // REQUIRED BY TEST CASES: Basic finders
     Optional<Medication> findByName(String name);
