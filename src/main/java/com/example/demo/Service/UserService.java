@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.models.User;  // Changed from 'model' to 'models'
-import java.util.List;
+import java.util.*;
 
 public interface UserService {
     User register(User user);
