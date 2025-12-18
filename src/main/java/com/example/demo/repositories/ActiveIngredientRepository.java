@@ -30,7 +30,6 @@ public class ActiveIngredient {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // ------------------ Lifecycle Hooks ------------------
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -42,10 +41,7 @@ public class ActiveIngredient {
         updatedAt = LocalDateTime.now();
     }
 
-    // ------------------ Constructors ------------------
-    public ActiveIngredient() {
-        // Default constructor for JPA
-    }
+    public ActiveIngredient() {}
 
     public ActiveIngredient(String name) {
         this.name = name;
@@ -57,87 +53,41 @@ public class ActiveIngredient {
         this.category = category;
     }
 
-    // ------------------ Getters and Setters ------------------
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public String getDescription() {
-        return description;
-    }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public String getCategory() {
-        return category;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    // ------------------ Helper Methods ------------------
-    public boolean isValid() {
-        return name != null && !name.trim().isEmpty();
-    }
-
-    // ------------------ equals and hashCode ------------------
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ActiveIngredient)) return false;
         ActiveIngredient that = (ActiveIngredient) o;
-        if (id != null && that.id != null) {
-            return Objects.equals(id, that.id);
-        }
+        if (id != null && that.id != null) return Objects.equals(id, that.id);
         return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        if (id != null) return Objects.hash(id);
-        return Objects.hash(name);
+        return id != null ? Objects.hash(id) : Objects.hash(name);
     }
 
-    // ------------------ toString ------------------
     @Override
     public String toString() {
         return "ActiveIngredient{" +
@@ -148,4 +98,3 @@ public class ActiveIngredient {
                 '}';
     }
 }
-
