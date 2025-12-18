@@ -1,6 +1,8 @@
 package com.example.demo.repositories;
 
 import com.example.demo.models.InteractionRule;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,7 +49,7 @@ public interface InteractionRuleRepository extends JpaRepository<InteractionRule
     List<InteractionRule> findCriticalRules();
     
     // Check if rule exists between ingredients
-    @Query("SELECT COUNT(r) > 0 FROM InteractionRule r WHERE " +
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM InteractionRule r WHERE " +
            "(r.ingredient1.id = :id1 AND r.ingredient2.id = :id2) OR " +
            "(r.ingredient1.id = :id2 AND r.ingredient2.id = :id1)")
     boolean existsBetweenIngredients(@Param("id1") long id1, @Param("id2") long id2);
@@ -69,11 +71,11 @@ public interface InteractionRuleRepository extends JpaRepository<InteractionRule
     @Query("SELECT COUNT(r) FROM InteractionRule r WHERE r.ingredient1.id = :id OR r.ingredient2.id = :id")
     long countByIngredientId(@Param("id") long id);
     
-    // Delete methods
+    // Delete methods - FIXED: Return int for affected rows count
     @Transactional
     @Modifying
     @Query("DELETE FROM InteractionRule r WHERE r.ingredient1.id = :id OR r.ingredient2.id = :id")
-    void deleteByIngredientId(@Param("id") long id);
+    int deleteByIngredientId(@Param("id") long id);
     
     // Find all rules ordered by severity (most severe first)
     @Query("SELECT r FROM InteractionRule r ORDER BY " +
@@ -85,13 +87,20 @@ public interface InteractionRuleRepository extends JpaRepository<InteractionRule
            "ELSE 5 END")
     List<InteractionRule> findAllOrderBySeverity();
     
-    // Find rules with pagination
+    // Find rules with pagination - ADDED: Pageable parameter
     @Query("SELECT r FROM InteractionRule r WHERE r.active = true")
-    List<InteractionRule> findActiveRules();
+    Page<InteractionRule> findActiveRules(Pageable pageable);
+    
+    // Alternative: List version without pagination
+    @Query("SELECT r FROM InteractionRule r WHERE r.active = true")
+    List<InteractionRule> findAllActiveRules();
     
     // Bulk operations
     @Query("SELECT r FROM InteractionRule r WHERE r.id IN :ids")
     List<InteractionRule> findByIds(@Param("ids") List<Long> ids);
+    
+    // Alternative: Use built-in method
+    List<InteractionRule> findByIdIn(List<Long> ids);
     
     // Find rules by ingredient name (exact match)
     @Query("SELECT r FROM InteractionRule r WHERE " +
