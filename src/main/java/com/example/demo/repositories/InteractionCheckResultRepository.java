@@ -1,4 +1,4 @@
-package com.example.demo.repositories;
+package com.example.demo.models;
 
 import com.example.demo.models.InteractionCheckResult;
 import org.springframework.data.domain.Page;
