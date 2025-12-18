@@ -1,6 +1,11 @@
 package com.example.project.models;
 
-import javax.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Objects;
 
 @Entity
@@ -11,11 +16,12 @@ public class ActiveIngredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 255)
     private String name;
     
     // Constructors
     public ActiveIngredient() {
+        // Default constructor for JPA
     }
     
     public ActiveIngredient(String name) {
@@ -45,13 +51,25 @@ public class ActiveIngredient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActiveIngredient that = (ActiveIngredient) o;
-        return Objects.equals(id, that.id) && 
-               Objects.equals(name, that.name);
+        
+        // For persisted entities, compare by ID
+        if (id != null && that.id != null) {
+            return Objects.equals(id, that.id);
+        }
+        
+        // For transient entities, compare by name
+        return Objects.equals(name, that.name);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        // For persisted entities, hash by ID
+        if (id != null) {
+            return Objects.hash(id);
+        }
+        
+        // For transient entities, hash by name
+        return Objects.hash(name);
     }
     
     @Override
