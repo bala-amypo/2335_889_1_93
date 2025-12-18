@@ -1,15 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.services;
 
-import com.example.demo.model.InteractionCheckResult;
-import java.util.*;
+import com.example.demo.models.InteractionCheckResult;
+
+import java.util.List;
 
 public interface InteractionService {
-    // Required by STEP 4
     InteractionCheckResult checkInteractions(List<Long> medicationIds);
-    InteractionCheckResult getResult(long resultId);
-    
-    // Additional CRUD operations
-    List<InteractionCheckResult> getAllResults();
-    void deleteResult(Long id);
-    List<InteractionCheckResult> getResultsByMedicationName(String medicationName);
+    InteractionCheckResult getResult(Long resultId);
 }
