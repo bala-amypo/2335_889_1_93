@@ -11,9 +11,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredient, Long> {
@@ -32,38 +32,36 @@ public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredie
     
     Page<ActiveIngredient> findByNameContainingIgnoreCase(String name, Pageable pageable);
     
-    // Find by multiple names
-    List<ActiveIngredient> findByNameIn(List<String> names);
-    
-    List<ActiveIngredient> findByNameIn(Set<String> names);
+    // Find by multiple names - FIXED: Use Collection instead of separate List/Set methods
+    List<ActiveIngredient> findByNameIn(Collection<String> names);
     
     // Count methods
     long countByNameContaining(String name);
     
     long countByNameIgnoreCase(String name);
     
-    // Delete methods
+    // Delete methods - FIXED: Return long to get delete count
     @Transactional
     @Modifying
-    void deleteByName(String name);
+    long deleteByName(String name);
     
     @Transactional
     @Modifying
     @Query("DELETE FROM ActiveIngredient ai WHERE ai.name = :name")
     int deleteByNameCustom(@Param("name") String name);
     
-    // Custom JPQL queries
-    @Query("SELECT ai FROM ActiveIngredient ai WHERE ai.name LIKE %:keyword%")
+    // Custom JPQL queries - FIXED: Corrected LIKE syntax
+    @Query("SELECT ai FROM ActiveIngredient ai WHERE ai.name LIKE CONCAT('%', :keyword, '%')")
     List<ActiveIngredient> searchByName(@Param("keyword") String keyword);
     
     @Query("SELECT ai FROM ActiveIngredient ai WHERE LOWER(ai.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<ActiveIngredient> searchByNameCaseInsensitive(@Param("keyword") String keyword);
     
-    @Query("SELECT ai FROM ActiveIngredient ai WHERE ai.name LIKE :prefix%")
+    @Query("SELECT ai FROM ActiveIngredient ai WHERE ai.name LIKE CONCAT(:prefix, '%')")
     List<ActiveIngredient> findByNameStartsWith(@Param("prefix") String prefix);
     
-    // Native SQL query (if needed)
-    @Query(value = "SELECT * FROM active_ingredients WHERE name ILIKE %:name%", nativeQuery = true)
+    // Native SQL query - FIXED: Database-portable version
+    @Query(value = "SELECT * FROM active_ingredients WHERE LOWER(name) LIKE LOWER(CONCAT('%', :name, '%'))", nativeQuery = true)
     List<ActiveIngredient> searchByNameNative(@Param("name") String name);
     
     // Find all with sorting
