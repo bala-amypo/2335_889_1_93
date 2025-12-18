@@ -1,4 +1,4 @@
-package com.example.demo.models;
+package com.example.demo.repositories;
 
 import com.example.demo.models.ActiveIngredient;
 import org.springframework.data.domain.Page;

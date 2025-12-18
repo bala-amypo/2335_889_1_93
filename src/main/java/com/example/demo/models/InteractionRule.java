@@ -1,4 +1,4 @@
-package com.example.project.models;
+package com.example.demo.models;
 
 import jakarta.persistence.*;
 
