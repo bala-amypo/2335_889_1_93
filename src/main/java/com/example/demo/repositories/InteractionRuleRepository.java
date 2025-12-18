@@ -2,12 +2,14 @@ package com.example.demo.repositories;
 
 import com.example.demo.models.InteractionRule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface InteractionRuleRepository extends JpaRepository<InteractionRule, Long> {
@@ -78,6 +80,8 @@ public interface InteractionRuleRepository extends JpaRepository<InteractionRule
     long countByIngredientId(@Param("id") long id);
     
     // Delete methods
+    @Transactional
+    @Modifying
     @Query("DELETE FROM InteractionRule r WHERE r.ingredient1.id = :id OR r.ingredient2.id = :id")
     void deleteByIngredientId(@Param("id") long id);
     
