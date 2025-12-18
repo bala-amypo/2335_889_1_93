@@ -1,4 +1,4 @@
-package com.example.demo.models;
+]\;
 
 import com.example.demo.models.Medication;
 import org.springframework.data.domain.Page;
