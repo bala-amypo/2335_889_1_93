@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.InteractionCheckResult;
-import java.util.List;
+import java.util.*;
 
 public interface InteractionService {
     // Required by STEP 4

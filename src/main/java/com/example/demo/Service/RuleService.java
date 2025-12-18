@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.InteractionRule;
-import java.util.List;
+import java.util.*;
 
 public interface RuleService {
     // Required by STEP 4

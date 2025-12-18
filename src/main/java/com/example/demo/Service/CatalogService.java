@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.Medication;
-import java.util.List;
+import java.util.*;
 
 public interface CatalogService {
     // Required by STEP 4
