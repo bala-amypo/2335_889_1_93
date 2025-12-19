@@ -1,10 +1,12 @@
-package com.example.demo.services;
+package com.example.demo.service;
 
-import com.example.demo.models.InteractionCheckResult;
+import com.example.demo.model.InteractionCheckResult;
 
 import java.util.List;
 
 public interface InteractionService {
+
     InteractionCheckResult checkInteractions(List<Long> medicationIds);
-    InteractionCheckResult getResult(Long resultId);
+
+    InteractionCheckResult getResult(Long id);
 }
