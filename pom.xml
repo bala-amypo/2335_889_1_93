@@ -30,6 +30,12 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+	<dependency>
+           <groupId>mysql</groupId>
+           <artifactId>mysql-connector-j</artifactId>
+           <version>8.1.1</version> <!-- use the latest stable version -->
+     </dependency>
+
 	    <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
