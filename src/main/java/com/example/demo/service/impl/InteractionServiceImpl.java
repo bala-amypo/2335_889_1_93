@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
+import com.example.demo.service.impl.ResourceNotFoundException;
 
-import com.example.demo.exception.ResourceNotFoundException;
+
+
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.InteractionService;
