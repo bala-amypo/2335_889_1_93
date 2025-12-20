@@ -1,12 +1,12 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "interaction_rules", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"ingredient_a_id", "ingredient_b_id"})
-})
+@Table(name = "interaction_rules")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,22 +17,13 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_a_id", nullable = false)
+    @JoinColumn(name = "ingredient_a_id")
     private ActiveIngredient ingredientA;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_b_id", nullable = false)
+    @JoinColumn(name = "ingredient_b_id")
     private ActiveIngredient ingredientB;
 
-    @Column(nullable = false)
-    private String severity; // MINOR, MODERATE, MAJOR
-
+    private String severity; // e.g., "High", "Medium", "Low"
     private String description;
-
-    public InteractionRule(ActiveIngredient ingredientA, ActiveIngredient ingredientB, String severity, String description) {
-        this.ingredientA = ingredientA;
-        this.ingredientB = ingredientB;
-        this.severity = severity;
-        this.description = description;
-    }
 }

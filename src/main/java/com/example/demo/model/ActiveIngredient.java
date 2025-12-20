@@ -1,13 +1,14 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "active_ingredients", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
+@Table(name = "active_ingredients")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,13 +18,8 @@ public class ActiveIngredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "ingredients")
-    private Set<Medication> medications = new HashSet<>();
-
-    public ActiveIngredient(String name) {
-        this.name = name;
-    }
+    private List<Medication> medications;
 }

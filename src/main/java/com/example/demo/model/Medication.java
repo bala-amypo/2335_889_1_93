@@ -1,10 +1,11 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "medications")
@@ -17,29 +18,13 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
     @ManyToMany
     @JoinTable(
-            name = "medication_ingredients",
+            name = "medication_ingredient",
             joinColumns = @JoinColumn(name = "medication_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private Set<ActiveIngredient> ingredients = new HashSet<>();
-
-    public Medication(String name) {
-        this.name = name;
-        this.ingredients = new HashSet<>();
-    }
-
-    public void addIngredient(ActiveIngredient ingredient) {
-        this.ingredients.add(ingredient);
-        ingredient.getMedications().add(this);
-    }
-
-    public void removeIngredient(ActiveIngredient ingredient) {
-        this.ingredients.remove(ingredient);
-        ingredient.getMedications().remove(this);
-    }
+    private List<ActiveIngredient> ingredients;
 }
