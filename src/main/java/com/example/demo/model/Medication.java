@@ -1,10 +1,10 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "medications")
 public class Medication {
 
     @Id
@@ -13,29 +13,43 @@ public class Medication {
 
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
         name = "medication_ingredient",
         joinColumns = @JoinColumn(name = "medication_id"),
         inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private List<ActiveIngredient> ingredients;
+    private Set<ActiveIngredient> ingredients = new HashSet<>();
 
+    // Constructors
     public Medication() {}
 
-    public Medication(String name, List<ActiveIngredient> ingredients) {
+    public Medication(String name) {
         this.name = name;
-        this.ingredients = ingredients;
     }
 
     // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public List<ActiveIngredient> getIngredients() { return ingredients; }
-    public void setIngredients(List<ActiveIngredient> ingredients) { this.ingredients = ingredients; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<ActiveIngredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Set<ActiveIngredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }
