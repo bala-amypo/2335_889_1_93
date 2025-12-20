@@ -1,12 +1,8 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.*;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.jpa.repository.Query;
-import java.util.Optional;
+import com.example.demo.entity.Medication;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-
-
-public interface MedicationRepository extends JpaRepository<Medication, Long> {}
-
-
+public interface MedicationRepository extends JpaRepository<Medication, Long> {
+    // Standard CRUD operations are enough
+}
