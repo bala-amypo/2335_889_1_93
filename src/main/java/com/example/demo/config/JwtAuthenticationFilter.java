@@ -14,12 +14,15 @@ import java.io.IOException;
 
 /**
  * JWT authentication filter.
- * This is a simple filter using a dummy token for testing purposes.
- * Replace with real JWT validation logic in production.
+ * 
+ * This filter checks for the presence of a JWT token in the "Authorization" header.
+ * Currently, it uses a dummy token for demonstration purposes.
+ * Replace this logic with actual JWT verification in production.
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    // Dummy token for testing
     private static final String DUMMY_TOKEN = "dummy-token";
 
     @Override
@@ -27,24 +30,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        // Get the Authorization header from the request
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+            String token = authHeader.substring(7); // Remove "Bearer " prefix
 
-            // Simple check against a dummy token
+            // Validate the token (dummy check for testing)
             if (DUMMY_TOKEN.equals(token)) {
-                // Create an authenticated user for testing
+                // Create a simple authenticated user
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken("user", null, null);
+
+                // Attach request details
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Set authentication in security context
+                // Set authentication in Spring Security context
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
-        // Continue the filter chain
+        // Continue with the next filter in the chain
         filterChain.doFilter(request, response);
     }
 }
