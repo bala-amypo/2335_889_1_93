@@ -1,11 +1,10 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "active_ingredients", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+@Table(name = "active_ingredients")
 public class ActiveIngredient {
 
     @Id
@@ -15,12 +14,14 @@ public class ActiveIngredient {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "ingredients")
-    private Set<Medication> medications = new HashSet<>();
+    @ManyToMany(mappedBy = "ingredients", cascade = CascadeType.ALL)
+    private List<Medication> medications;
 
-    public ActiveIngredient() { }
-
+    public ActiveIngredient() {}
     public ActiveIngredient(String name) { this.name = name; }
+
+    // getters and setters
+
 
     // Getters and Setters
     public Long getId() { return id; }
