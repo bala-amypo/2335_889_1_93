@@ -13,10 +13,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * A simple JWT authentication filter.
- * Replace the dummy token logic with real JWT validation logic.
+ * JWT authentication filter.
+ * Replace the dummy token logic with real JWT validation.
  */
-@Component("jwtAuthenticationFilter") // explicit bean name to avoid conflicts
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String DUMMY_TOKEN = "dummy-token";
@@ -32,12 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             if (DUMMY_TOKEN.equals(token)) {
-                // Create a dummy authenticated user
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken("user", null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Set the authentication in the security context
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
