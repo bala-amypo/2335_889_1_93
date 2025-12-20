@@ -10,19 +10,32 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "ingredient_a_id", nullable = false)
     private ActiveIngredient ingredientA;
 
     @ManyToOne
+    @JoinColumn(name = "ingredient_b_id", nullable = false)
     private ActiveIngredient ingredientB;
 
-    private String severity;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Severity severity;
+
+    @Column(length = 500)
     private String description;
 
-    // getters & setters
+    // Enum for severity
+    public enum Severity {
+        MINOR,
+        MODERATE,
+        MAJOR
+    }
+
+    // Getters & setters
     public Long getId() {
         return id;
     }
- 
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -43,18 +56,18 @@ public class InteractionRule {
         this.ingredientB = ingredientB;
     }
 
-    public String getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
- 
-    public void setSeverity(String severity) {
+
+    public void setSeverity(Severity severity) {
         this.severity = severity;
     }
- 
+
     public String getDescription() {
         return description;
     }
- 
+
     public void setDescription(String description) {
         this.description = description;
     }
