@@ -13,6 +13,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Constructor injection is correct
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -21,8 +22,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(User user) {
         if (user.getRole() == null) {
-            user.setRole("USER");
+            user.setRole("USER"); // Default role
         }
+        // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
