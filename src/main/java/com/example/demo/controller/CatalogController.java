@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.ActiveIngredient;
-import com.example.demo.model.Medication;
 import com.example.demo.service.CatalogService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/catalog")
@@ -18,21 +18,21 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
+    @GetMapping("/ingredient")
+    public ResponseEntity<List<ActiveIngredient>> getAllIngredients() {
+        List<ActiveIngredient> ingredients = catalogService.getAllIngredients();
+        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+    }
+
+    @GetMapping("/ingredient/{id}")
+    public ResponseEntity<ActiveIngredient> getIngredientById(@PathVariable Long id) {
+        ActiveIngredient ingredient = catalogService.getIngredientById(id);
+        return new ResponseEntity<>(ingredient, HttpStatus.OK);
+    }
+
     @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
-        return catalogService.addIngredient(ingredient);
-    }
-
-    @PostMapping("/medication")
-    public Medication addMedication(@RequestParam String name,
-                                    @RequestBody Set<ActiveIngredient> ingredients) {
-        Medication medication = new Medication(name);
-        medication.setIngredients(ingredients);
-        return catalogService.addMedication(medication);
-    }
-
-    @GetMapping("/medications")
-    public List<Medication> getAllMedications() {
-        return catalogService.getAllMedications();
+    public ResponseEntity<ActiveIngredient> addIngredient(@RequestBody ActiveIngredient ingredient) {
+        ActiveIngredient saved = catalogService.addIngredient(ingredient);
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 }
