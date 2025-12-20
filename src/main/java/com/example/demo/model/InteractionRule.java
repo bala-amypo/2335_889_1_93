@@ -15,6 +15,7 @@ public class InteractionRule {
 
     @ManyToOne
     @JoinColumn(name = "ingredientA_id", nullable = false)
+    @JsonIgnore
     private ActiveIngredient ingredientA;
 
     @ManyToOne
