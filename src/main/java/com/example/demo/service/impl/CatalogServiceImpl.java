@@ -4,7 +4,6 @@ import com.example.demo.model.ActiveIngredient;
 import com.example.demo.repository.ActiveIngredientRepository;
 import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -23,12 +22,12 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public ActiveIngredient getIngredientById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ingredient not found with id: " + id));
+        return repository.findById(id).orElse(null);
     }
 
     @Override
-    public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
+    public ActiveIngredient createIngredient(ActiveIngredient ingredient) {
+        ingredient.setId(null); // Let DB generate the ID
         return repository.save(ingredient);
     }
 }

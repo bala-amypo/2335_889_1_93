@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ActiveIngredient;
 import com.example.demo.service.CatalogService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,19 +19,19 @@ public class CatalogController {
 
     @GetMapping("/ingredient")
     public ResponseEntity<List<ActiveIngredient>> getAllIngredients() {
-        List<ActiveIngredient> ingredients = catalogService.getAllIngredients();
-        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        return ResponseEntity.ok(catalogService.getAllIngredients());
     }
 
     @GetMapping("/ingredient/{id}")
     public ResponseEntity<ActiveIngredient> getIngredientById(@PathVariable Long id) {
         ActiveIngredient ingredient = catalogService.getIngredientById(id);
-        return new ResponseEntity<>(ingredient, HttpStatus.OK);
+        if (ingredient == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(ingredient);
     }
 
     @PostMapping("/ingredient")
-    public ResponseEntity<ActiveIngredient> addIngredient(@RequestBody ActiveIngredient ingredient) {
-        ActiveIngredient saved = catalogService.addIngredient(ingredient);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    public ResponseEntity<ActiveIngredient> createIngredient(@RequestBody ActiveIngredient ingredient) {
+        ActiveIngredient saved = catalogService.createIngredient(ingredient);
+        return ResponseEntity.ok(saved);
     }
 }
