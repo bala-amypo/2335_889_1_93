@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 
 @Entity
@@ -28,7 +30,19 @@ public class InteractionRule {
     public enum Severity {
         MINOR,
         MODERATE,
-        MAJOR
+        MAJOR;
+
+        // For JSON deserialization
+        @JsonCreator
+        public static Severity fromString(String value) {
+            return Severity.valueOf(value.trim().toUpperCase());
+        }
+
+        // For JSON serialization
+        @JsonValue
+        public String toValue() {
+            return this.name();
+        }
     }
 
     // Getters & setters
@@ -60,6 +74,7 @@ public class InteractionRule {
         return severity;
     }
 
+    // Updated setter to handle string input safely
     public void setSeverity(Severity severity) {
         this.severity = severity;
     }
