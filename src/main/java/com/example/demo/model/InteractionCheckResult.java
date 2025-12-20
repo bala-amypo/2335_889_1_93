@@ -11,49 +11,37 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String medications;
+    @Column(columnDefinition = "TEXT")
+    private String medications; // Comma-separated medication names
 
     @Column(columnDefinition = "TEXT")
-    private String interactions;
+    private String interactions; // JSON summary
 
-    private LocalDateTime checkedAt = LocalDateTime.now();
+    private LocalDateTime checkedAt;
 
-    public InteractionCheckResult() {}
+    public InteractionCheckResult() { }
 
     public InteractionCheckResult(String medications, String interactions) {
         this.medications = medications;
         this.interactions = interactions;
+        this.checkedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
+    @PrePersist
+    public void prePersist() {
+        if (checkedAt == null) checkedAt = LocalDateTime.now();
     }
 
-    public String getMedications() {
-        return medications;
-    }
-    
-    public void setMedications(String medications) {
-        this.medications = medications;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getInteractions() {
-        return interactions;
-    }
-    
-    public void setInteractions(String interactions) {
-        this.interactions = interactions;
-    }
+    public String getMedications() { return medications; }
+    public void setMedications(String medications) { this.medications = medications; }
 
-    public LocalDateTime getCheckedAt() {
-        return checkedAt;
-    }
-    
-    public void setCheckedAt(LocalDateTime checkedAt) {
-        this.checkedAt = checkedAt;
-    }
+    public String getInteractions() { return interactions; }
+    public void setInteractions(String interactions) { this.interactions = interactions; }
+
+    public LocalDateTime getCheckedAt() { return checkedAt; }
+    public void setCheckedAt(LocalDateTime checkedAt) { this.checkedAt = checkedAt; }
 }
