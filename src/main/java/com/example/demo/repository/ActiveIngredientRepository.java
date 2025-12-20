@@ -9,6 +9,9 @@ import java.util.Optional;
 @Repository
 public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredient, Long> {
 
-    // Finds an ingredient by its name
+    // Find ingredient by name
     Optional<ActiveIngredient> findByName(String name);
+
+    // Check if ingredient exists by name
+    boolean existsByName(String name);
 }
