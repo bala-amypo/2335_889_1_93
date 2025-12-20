@@ -4,9 +4,11 @@ import com.example.demo.model.ActiveIngredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ActiveIngredientRepository
-        extends JpaRepository<ActiveIngredient, Long> {
+import java.util.Optional;
 
-    boolean existsByName(String name);
+@Repository
+public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredient, Long> {
+
+    // Finds an ingredient by its name
+    Optional<ActiveIngredient> findByName(String name);
 }

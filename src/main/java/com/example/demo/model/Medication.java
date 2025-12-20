@@ -10,14 +10,15 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
-    @ManyToMany
+    // Many-to-many relationship with ActiveIngredient
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "medication_ingredient",
-        joinColumns = @JoinColumn(name = "medication_id"),
-        inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+            name = "medication_ingredient",
+            joinColumns = @JoinColumn(name = "medication_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
     private List<ActiveIngredient> ingredients;
 

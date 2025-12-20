@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/catalog")
@@ -25,30 +24,28 @@ public class CatalogController {
     // Create a new active ingredient
     @PostMapping("/ingredient")
     public ResponseEntity<?> createIngredient(@RequestBody ActiveIngredient ingredient) {
-        Optional<ActiveIngredient> existingIngredient = ingredientRepo.findByName(ingredient.getName());
-        if (existingIngredient.isPresent()) {
-            return ResponseEntity.badRequest().body("Ingredient already exists: " + ingredient.getName());
+        if (ingredientRepo.findByName(ingredient.getName()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body("Ingredient already exists: " + ingredient.getName());
         }
-        ActiveIngredient savedIngredient = ingredientRepo.save(ingredient);
-        return ResponseEntity.ok(savedIngredient);
+        return ResponseEntity.ok(ingredientRepo.save(ingredient));
     }
 
-    // Create a new medication
+    // Create a new medication with existing ingredients
     @PostMapping("/medication")
     public ResponseEntity<?> createMedication(@RequestBody Medication medication) {
         // Validate that all ingredients exist
         for (ActiveIngredient ing : medication.getIngredients()) {
             ingredientRepo.findById(ing.getId())
-                    .orElseThrow(() -> new RuntimeException("Ingredient not found with ID " + ing.getId()));
+                    .orElseThrow(() -> new RuntimeException(
+                            "Ingredient not found with ID " + ing.getId()));
         }
-        Medication savedMedication = medicationRepo.save(medication);
-        return ResponseEntity.ok(savedMedication);
+        return ResponseEntity.ok(medicationRepo.save(medication));
     }
 
     // List all medications
     @GetMapping("/medications")
-    public ResponseEntity<List<Medication>> listMedications() {
-        List<Medication> medications = medicationRepo.findAll();
-        return ResponseEntity.ok(medications);
+    public List<Medication> listMedications() {
+        return medicationRepo.findAll();
     }
 }
