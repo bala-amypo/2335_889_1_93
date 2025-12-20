@@ -26,4 +26,13 @@ public class AuthController {
         // Optional: for testing, list all users
         return List.of(userService.findByEmail("example@example.com")); // Replace as needed
     }
+    @GetMapping("/users")
+public ResponseEntity<List<User>> getAllUsers() {
+    try {
+        return ResponseEntity.ok(userRepository.findAll());
+    } catch(Exception e) {
+        return ResponseEntity.status(500).body(null);
+    }
+}
+
 }
