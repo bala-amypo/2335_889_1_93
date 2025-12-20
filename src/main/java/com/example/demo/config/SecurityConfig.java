@@ -11,9 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Security configuration class for JWT-based authentication.
- */
 @Configuration
 public class SecurityConfig {
 
@@ -23,40 +20,31 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    /**
-     * Password encoder bean using BCrypt.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * AuthenticationManager bean required for authentication injection.
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    /**
-     * Configures the security filter chain.
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/auth/**",           // Authentication endpoints
-                    "/swagger-ui/**",     // Swagger UI
-                    "/v3/api-docs/**",    // OpenAPI docs
-                    "/rules/**"           // Allow your rules API endpoints for testing
+                    "/auth/**",              // Public authentication endpoints
+                    "/swagger-ui/**",        // Swagger UI
+                    "/v3/api-docs/**",       // OpenAPI docs
+                    "/catalog/**"            // Make /catalog/medication public
                 ).permitAll()
                 .anyRequest().authenticated() // All other endpoints require authentication
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
