@@ -1,8 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "medications")
@@ -14,21 +13,19 @@ public class Medication {
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-        name = "medication_ingredients",
+        name = "medication_ingredient",
         joinColumns = @JoinColumn(name = "medication_id"),
         inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private Set<ActiveIngredient> ingredients = new HashSet<>();
+    private List<ActiveIngredient> ingredients;
 
-    public Medication() { }
-
+    public Medication() {}
     public Medication(String name) { this.name = name; }
 
-    // Helper methods
-    public void addIngredient(ActiveIngredient ingredient) { ingredients.add(ingredient); }
-    public void removeIngredient(ActiveIngredient ingredient) { ingredients.remove(ingredient); }
+    // getters and setters
+}
 
     // Getters and Setters
     public Long getId() { return id; }
