@@ -1,77 +1,51 @@
-package com.example.demo.service.impl;
-import com.example.demo.service.impl.ResourceNotFoundException;
-
-
-
-import com.example.demo.model.*;
-import com.example.demo.repository.*;
-import com.example.demo.service.InteractionService;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Service
 public class InteractionServiceImpl implements InteractionService {
 
-    private final MedicationRepository medicationRepo;
+    private final MedicationRepository medRepo;
     private final InteractionRuleRepository ruleRepo;
     private final InteractionCheckResultRepository resultRepo;
 
-    public InteractionServiceImpl(MedicationRepository medicationRepo,
-                                  InteractionRuleRepository ruleRepo,
-                                  InteractionCheckResultRepository resultRepo) {
-        this.medicationRepo = medicationRepo;
-        this.ruleRepo = ruleRepo;
-        this.resultRepo = resultRepo;
+    public InteractionServiceImpl(MedicationRepository m,
+                                  InteractionRuleRepository r,
+                                  InteractionCheckResultRepository res) {
+        this.medRepo = m;
+        this.ruleRepo = r;
+        this.resultRepo = res;
     }
 
-    @Override
-    public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
+    public InteractionCheckResult checkInteractions(List<Long> ids) {
 
-        List<Medication> meds = medicationRepo.findAllById(medicationIds);
+        List<Medication> meds = medRepo.findAllById(ids);
+        if (meds.size() != ids.size())
+            throw new ResourceNotFoundException("Medication not found");
 
-        if (meds.isEmpty()) {
-            throw new IllegalArgumentException("No valid medications found");
-        }
-
-        Set<ActiveIngredient> ingredients = meds.stream()
+        List<ActiveIngredient> ings = meds.stream()
                 .flatMap(m -> m.getIngredients().stream())
-                .collect(Collectors.toSet());
+                .toList();
 
-        List<String> detected = new ArrayList<>();
+        List<String> found = new ArrayList<>();
 
-        List<ActiveIngredient> list = new ArrayList<>(ingredients);
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = i + 1; j < list.size(); j++) {
+        for (int i=0;i<ings.size();i++) {
+            for (int j=i+1;j<ings.size();j++) {
                 ruleRepo.findRuleBetweenIngredients(
-                        list.get(i).getId(),
-                        list.get(j).getId()
-                ).ifPresent(rule ->
-                        detected.add(rule.getIngredientA().getName()
-                                + " + " + rule.getIngredientB().getName()
-                                + " (" + rule.getSeverity() + ")")
-                );
+                        ings.get(i).getId(),
+                        ings.get(j).getId()
+                ).ifPresent(r -> found.add(
+                        ings.get(i).getName()+"-"+ings.get(j).getName()+"("+r.getSeverity()+")"
+                ));
             }
         }
 
-        String medsNames = meds.stream()
-                .map(Medication::getName)
-                .collect(Collectors.joining(","));
-
-        String resultJson = detected.toString();
-
-        InteractionCheckResult result =
-                new InteractionCheckResult(medsNames, resultJson);
-
-        return resultRepo.save(result);
+        return resultRepo.save(
+                new InteractionCheckResult(
+                        meds.stream().map(Medication::getName).toList().toString(),
+                        found.toString()
+                )
+        );
     }
 
-    @Override
     public InteractionCheckResult getResult(Long id) {
         return resultRepo.findById(id)
-            .orElseThrow(() ->
-                new ResourceNotFoundException("Interaction result not found with id " + id)
-            );
+                .orElseThrow(() -> new ResourceNotFoundException("Result not found"));
     }
 }

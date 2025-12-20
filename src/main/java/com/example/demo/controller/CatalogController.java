@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.Medication;
 import com.example.demo.service.CatalogService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,18 +17,20 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
+    // POST /catalog/ingredient
     @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(
-            @Valid @RequestBody ActiveIngredient ingredient) {
+    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
         return catalogService.addIngredient(ingredient);
     }
 
+    // POST /catalog/medication
     @PostMapping("/medication")
-    public Medication addMedication(
-            @Valid @RequestBody Medication medication) {
-        return catalogService.addMedication(medication);
+    public Medication addMedication(@RequestParam String name,
+                                    @RequestBody List<Long> ingredientIds) {
+        return catalogService.addMedication(name, ingredientIds);
     }
 
+    // GET /catalog/medications
     @GetMapping("/medications")
     public List<Medication> getAllMedications() {
         return catalogService.getAllMedications();
