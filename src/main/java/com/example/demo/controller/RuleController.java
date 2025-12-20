@@ -1,10 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.InteractionRule;
 import com.example.demo.repository.ActiveIngredientRepository;
 import com.example.demo.repository.InteractionRuleRepository;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,45 +10,27 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rules")
 public class RuleController {
 
-    private final InteractionRuleRepository ruleRepository;
-    private final ActiveIngredientRepository ingredientRepository;
+    private final InteractionRuleRepository ruleRepo;
+    private final ActiveIngredientRepository ingredientRepo;
 
-    public RuleController(InteractionRuleRepository ruleRepository,
-                          ActiveIngredientRepository ingredientRepository) {
-        this.ruleRepository = ruleRepository;
-        this.ingredientRepository = ingredientRepository;
+    public RuleController(InteractionRuleRepository ruleRepo, ActiveIngredientRepository ingredientRepo) {
+        this.ruleRepo = ruleRepo;
+        this.ingredientRepo = ingredientRepo;
     }
 
     @PostMapping
-    public ResponseEntity<InteractionRule> createRule(@Valid @RequestBody InteractionRule rule) {
+    public ResponseEntity<?> createRule(@RequestBody InteractionRule rule) {
+        // Ensure ingredients exist
+        ingredientRepo.findById(rule.getIngredientA().getId())
+                .orElseThrow(() -> new RuntimeException("Ingredient A not found"));
+        ingredientRepo.findById(rule.getIngredientB().getId())
+                .orElseThrow(() -> new RuntimeException("Ingredient B not found"));
 
-        // Handle ingredient A
-        if (rule.getIngredientA().getId() != null) {
-            rule.setIngredientA(
-                ingredientRepository.findById(rule.getIngredientA().getId())
-                    .orElseGet(() -> ingredientRepository.save(rule.getIngredientA()))
-            );
-        } else {
-            rule.setIngredientA(ingredientRepository.save(rule.getIngredientA()));
+        // Ensure severity is valid
+        if (rule.getSeverity() == null) {
+            return ResponseEntity.badRequest().body("Severity must be MINOR, MODERATE, or MAJOR");
         }
 
-        // Handle ingredient B
-        if (rule.getIngredientB().getId() != null) {
-            rule.setIngredientB(
-                ingredientRepository.findById(rule.getIngredientB().getId())
-                    .orElseGet(() -> ingredientRepository.save(rule.getIngredientB()))
-            );
-        } else {
-            rule.setIngredientB(ingredientRepository.save(rule.getIngredientB()));
-        }
-
-        // Save rule
-        InteractionRule savedRule = ruleRepository.save(rule);
-        return ResponseEntity.ok(savedRule);
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAllRules() {
-        return ResponseEntity.ok(ruleRepository.findAll());
+        return ResponseEntity.ok(ruleRepo.save(rule));
     }
 }

@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class InteractionRule {
@@ -11,14 +10,13 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_a_id", nullable = false)
+    @JoinColumn(nullable = false)
     private ActiveIngredient ingredientA;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_b_id", nullable = false)
+    @JoinColumn(nullable = false)
     private ActiveIngredient ingredientB;
 
-    @NotNull(message = "Severity must be MINOR, MODERATE, or MAJOR")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Severity severity;
@@ -26,13 +24,9 @@ public class InteractionRule {
     @Column(length = 500)
     private String description;
 
-    public enum Severity {
-        MINOR,
-        MODERATE,
-        MAJOR
-    }
+    public enum Severity { MINOR, MODERATE, MAJOR }
 
-    // Getters & Setters
+    // Getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

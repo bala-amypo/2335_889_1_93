@@ -2,8 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.Medication;
-import com.example.demo.service.CatalogService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.ActiveIngredientRepository;
+import com.example.demo.repository.MedicationRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,25 +13,35 @@ import java.util.List;
 @RequestMapping("/catalog")
 public class CatalogController {
 
-    private final CatalogService catalogService;
+    private final ActiveIngredientRepository ingredientRepo;
+    private final MedicationRepository medicationRepo;
 
-    @Autowired
-    public CatalogController(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public CatalogController(ActiveIngredientRepository ingredientRepo, MedicationRepository medicationRepo) {
+        this.ingredientRepo = ingredientRepo;
+        this.medicationRepo = medicationRepo;
     }
 
     @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
-        return catalogService.addIngredient(ingredient);
+    public ResponseEntity<?> createIngredient(@RequestBody ActiveIngredient ingredient) {
+        if (ingredientRepo.findByName(ingredient.getName()).isPresent()) {
+            return ResponseEntity.badRequest().body("Ingredient already exists: " + ingredient.getName());
+        }
+        return ResponseEntity.ok(ingredientRepo.save(ingredient));
     }
 
     @PostMapping("/medication")
-    public Medication addMedication(@RequestBody Medication medication) {
-        return catalogService.addMedication(medication);
+    public ResponseEntity<?> createMedication(@RequestBody Medication medication) {
+        // Ensure ingredients exist
+        for (int i = 0; i < medication.getIngredients().size(); i++) {
+            ActiveIngredient ing = medication.getIngredients().get(i);
+            ingredientRepo.findById(ing.getId())
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with ID " + ing.getId()));
+        }
+        return ResponseEntity.ok(medicationRepo.save(medication));
     }
 
     @GetMapping("/medications")
-    public List<Medication> getAllMedications() {
-        return catalogService.getAllMedications();
+    public List<Medication> listMedications() {
+        return medicationRepo.findAll();
     }
 }
