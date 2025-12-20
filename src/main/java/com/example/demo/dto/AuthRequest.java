@@ -1,32 +1,13 @@
 package com.example.demo.dto;
 
-import jakarta.validation.constraints.NotBlank;
-
-/**
- * DTO for login request
- */
 public class AuthRequest {
-
-    @NotBlank(message = "Username must not be blank")
-    private String username;
-
-    @NotBlank(message = "Password must not be blank")
+    private String email;
     private String password;
 
-    // Getters and Setters
-    public String getUsername() {
-        return username;
-    }
+    // Getters & setters
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
