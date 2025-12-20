@@ -1,28 +1,13 @@
-package com.example.demo.controller;
+package com.example.demo.repository;
 
-import com.example.demo.model.InteractionCheckResult;
-import com.example.demo.service.InteractionService;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.model.ActiveIngredient;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/interact")
-public class InteractionController {
-
-    private final InteractionService interactionService;
-
-    public InteractionController(InteractionService interactionService) {
-        this.interactionService = interactionService;
-    }
-
-    @PostMapping("/check")
-    public InteractionCheckResult checkInteractions(@RequestBody List<Long> medicationIds) {
-        return interactionService.checkInteractions(medicationIds);
-    }
-
-    @GetMapping("/result/{id}")
-    public InteractionCheckResult getResult(@PathVariable Long id) {
-        return interactionService.getResult(id);
-    }
+@Repository
+public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredient, Long> {
+    Optional<ActiveIngredient> findByName(String name);
+    boolean existsByName(String name);
 }

@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.model.ActiveIngredient;
+import com.example.demo.model.Medication;
+
 import java.util.List;
 
 public interface CatalogService {
-    List<ActiveIngredient> getAllIngredients();
-    ActiveIngredient getIngredientById(Long id);
-    ActiveIngredient createIngredient(ActiveIngredient ingredient);
+    ActiveIngredient addIngredient(ActiveIngredient ingredient);
+    Medication addMedication(Medication medication);
+    List<Medication> getAllMedications();
 }
