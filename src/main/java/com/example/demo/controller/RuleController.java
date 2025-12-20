@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.InteractionRule;
-import com.example.demo.service.RuleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.InteractionRuleRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,20 +11,21 @@ import java.util.List;
 @RequestMapping("/rules")
 public class RuleController {
 
-    private final RuleService ruleService;
+    private final InteractionRuleRepository ruleRepository;
 
-    @Autowired
-    public RuleController(RuleService ruleService) {
-        this.ruleService = ruleService;
-    }
-
-    @PostMapping
-    public InteractionRule addRule(@RequestBody InteractionRule rule) {
-        return ruleService.addRule(rule);
+    public RuleController(InteractionRuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
     }
 
     @GetMapping
     public List<InteractionRule> getAllRules() {
-        return ruleService.getAllRules();
+        return ruleRepository.findAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<InteractionRule> createRule(@RequestBody InteractionRule rule) {
+        // Save directly; severity enum will automatically validate
+        InteractionRule saved = ruleRepository.save(rule);
+        return ResponseEntity.ok(saved);
     }
 }

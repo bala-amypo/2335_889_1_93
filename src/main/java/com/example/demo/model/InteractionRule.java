@@ -26,19 +26,15 @@ public class InteractionRule {
     @Column(length = 500)
     private String description;
 
-    // Enum for severity
+    // Enum for severity with JSON support
     public enum Severity {
-        MINOR,
-        MODERATE,
-        MAJOR;
+        MINOR, MODERATE, MAJOR;
 
-        // For JSON deserialization
         @JsonCreator
         public static Severity fromString(String value) {
             return Severity.valueOf(value.trim().toUpperCase());
         }
 
-        // For JSON serialization
         @JsonValue
         public String toValue() {
             return this.name();
@@ -46,44 +42,18 @@ public class InteractionRule {
     }
 
     // Getters & setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public ActiveIngredient getIngredientA() { return ingredientA; }
+    public void setIngredientA(ActiveIngredient ingredientA) { this.ingredientA = ingredientA; }
 
-    public ActiveIngredient getIngredientA() {
-        return ingredientA;
-    }
+    public ActiveIngredient getIngredientB() { return ingredientB; }
+    public void setIngredientB(ActiveIngredient ingredientB) { this.ingredientB = ingredientB; }
 
-    public void setIngredientA(ActiveIngredient ingredientA) {
-        this.ingredientA = ingredientA;
-    }
+    public Severity getSeverity() { return severity; }
+    public void setSeverity(Severity severity) { this.severity = severity; }
 
-    public ActiveIngredient getIngredientB() {
-        return ingredientB;
-    }
-
-    public void setIngredientB(ActiveIngredient ingredientB) {
-        this.ingredientB = ingredientB;
-    }
-
-    public Severity getSeverity() {
-        return severity;
-    }
-
-    // Updated setter to handle string input safely
-    public void setSeverity(Severity severity) {
-        this.severity = severity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
