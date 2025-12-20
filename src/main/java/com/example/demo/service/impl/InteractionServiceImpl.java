@@ -1,6 +1,6 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.ActiveIngredient;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.InteractionCheckResult;
 import com.example.demo.model.InteractionRule;
 import com.example.demo.model.Medication;
@@ -8,7 +8,6 @@ import com.example.demo.repository.InteractionCheckResultRepository;
 import com.example.demo.repository.InteractionRuleRepository;
 import com.example.demo.repository.MedicationRepository;
 import com.example.demo.service.InteractionService;
-import com.example.demo.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,35 +31,46 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public InteractionCheckResult checkInteractions(List<Long> medicationIds) {
         List<Medication> medications = medicationRepository.findAllById(medicationIds);
-        if (medications.isEmpty()) throw new IllegalArgumentException("No medications found");
+        if (medications.isEmpty()) {
+            throw new ResourceNotFoundException("No medications found for the provided IDs");
+        }
 
-        Set<ActiveIngredient> allIngredients = medications.stream()
-                .flatMap(m -> m.getIngredients().stream())
-                .collect(Collectors.toSet());
+        Set<Long> ingredientIds = new HashSet<>();
+        Map<Long, String> ingredientIdToName = new HashMap<>();
 
-        List<InteractionRule> rules = ruleRepository.findAll();
-
-        List<String> detectedInteractions = new ArrayList<>();
-
-        for (InteractionRule rule : rules) {
-            if (allIngredients.contains(rule.getIngredientA()) &&
-                allIngredients.contains(rule.getIngredientB())) {
-                detectedInteractions.add(rule.getIngredientA().getName() + " - " +
-                        rule.getIngredientB().getName() + ": " + rule.getSeverity() +
-                        " (" + rule.getDescription() + ")");
+        for (Medication med : medications) {
+            for (var ing : med.getIngredients()) {
+                ingredientIds.add(ing.getId());
+                ingredientIdToName.put(ing.getId(), ing.getName());
             }
         }
 
-        String medicationNames = medications.stream().map(Medication::getName).collect(Collectors.joining(", "));
-        String interactionsJson = "[" + detectedInteractions.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
+        List<InteractionRule> allRules = ruleRepository.findAll();
 
-        InteractionCheckResult result = new InteractionCheckResult(medicationNames, interactionsJson);
+        List<Map<String, String>> interactions = new ArrayList<>();
+        for (InteractionRule rule : allRules) {
+            if (ingredientIds.contains(rule.getIngredientA().getId()) &&
+                ingredientIds.contains(rule.getIngredientB().getId())) {
+
+                Map<String, String> interaction = new HashMap<>();
+                interaction.put("ingredientA", rule.getIngredientA().getName());
+                interaction.put("ingredientB", rule.getIngredientB().getName());
+                interaction.put("severity", rule.getSeverity());
+                interaction.put("description", rule.getDescription());
+                interactions.add(interaction);
+            }
+        }
+
+        String medNames = medications.stream().map(Medication::getName).collect(Collectors.joining(", "));
+        String interactionsJson = interactions.isEmpty() ? "[]" : interactions.toString();
+
+        InteractionCheckResult result = new InteractionCheckResult(medNames, interactionsJson);
         return resultRepository.save(result);
     }
 
     @Override
     public InteractionCheckResult getResult(Long resultId) {
         return resultRepository.findById(resultId)
-                .orElseThrow(() -> new ResourceNotFoundException("Interaction check result not found for ID: " + resultId));
+                .orElseThrow(() -> new ResourceNotFoundException("Interaction check result not found with ID: " + resultId));
     }
 }
