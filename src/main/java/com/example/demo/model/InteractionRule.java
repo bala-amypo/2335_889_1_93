@@ -1,76 +1,38 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "interaction_rules")
 public class InteractionRule {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ingredient_a_id")
-    private ActiveIngredient ingredientA;
-
-    @ManyToOne
-    @JoinColumn(name = "ingredient_b_id")
-    private ActiveIngredient ingredientB;
-
-    private String severity;
-
     private String description;
+
+    @ManyToOne
+    private Medication medication1;
+
+    @ManyToOne
+    private Medication medication2;
 
     public InteractionRule() {}
 
-    public InteractionRule(ActiveIngredient ingredientA,
-                           ActiveIngredient ingredientB,
-                           String severity,
-                           String description) {
-        this.ingredientA = ingredientA;
-        this.ingredientB = ingredientB;
-        this.severity = severity;
+    public InteractionRule(String description, Medication medication1, Medication medication2) {
         this.description = description;
+        this.medication1 = medication1;
+        this.medication2 = medication2;
     }
 
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public ActiveIngredient getIngredientA() {
-        return ingredientA;
-    }
-    
-    public void setIngredientA(ActiveIngredient ingredientA) {
-        this.ingredientA = ingredientA;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public ActiveIngredient getIngredientB() {
-        return ingredientB;
-    }
-    
-    public void setIngredientB(ActiveIngredient ingredientB) {
-        this.ingredientB = ingredientB;
-    }
+    public Medication getMedication1() { return medication1; }
+    public void setMedication1(Medication medication1) { this.medication1 = medication1; }
 
-    public String getSeverity() {
-        return severity;
-    }
-    
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Medication getMedication2() { return medication2; }
+    public void setMedication2(Medication medication2) { this.medication2 = medication2; }
 }
