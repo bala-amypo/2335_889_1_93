@@ -1,15 +1,13 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "interaction_rules")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class InteractionRule {
 
     @Id
@@ -17,13 +15,14 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_a_id")
+    @JoinColumn(name = "ingredient_a_id", nullable = false)
     private ActiveIngredient ingredientA;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_b_id")
+    @JoinColumn(name = "ingredient_b_id", nullable = false)
     private ActiveIngredient ingredientB;
 
-    private String severity; // e.g., "High", "Medium", "Low"
+    private String severity;
+
     private String description;
 }
