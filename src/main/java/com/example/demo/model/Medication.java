@@ -1,9 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,8 +12,6 @@ public class Medication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Medication name cannot be empty")
-    @Size(max = 150, message = "Medication name too long")
     private String name;
 
     @ManyToMany
@@ -33,36 +28,26 @@ public class Medication {
         this.name = name;
     }
 
-    // Helper methods
-    public void addIngredient(ActiveIngredient ingredient) {
-        this.ingredients.add(ingredient);
-    }
-
-    public void removeIngredient(ActiveIngredient ingredient) {
-        this.ingredients.remove(ingredient);
-    }
-
-    // Getters & Setters
     public Long getId() {
         return id;
     }
- 
+    
     public void setId(Long id) {
         this.id = id;
     }
- 
+
     public String getName() {
         return name;
     }
- 
+    
     public void setName(String name) {
         this.name = name;
     }
- 
+
     public Set<ActiveIngredient> getIngredients() {
         return ingredients;
     }
- 
+    
     public void setIngredients(Set<ActiveIngredient> ingredients) {
         this.ingredients = ingredients;
     }
