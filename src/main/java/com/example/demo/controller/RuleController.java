@@ -5,7 +5,6 @@ import com.example.demo.service.RuleService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/rules")
@@ -17,19 +16,11 @@ public class RuleController {
         this.ruleService = ruleService;
     }
 
-    // POST /rules
     @PostMapping
-    public InteractionRule addRule(@RequestBody Map<String, Object> request) {
-
-        Long ingredientA = Long.valueOf(request.get("ingredientA").toString());
-        Long ingredientB = Long.valueOf(request.get("ingredientB").toString());
-        String severity = request.get("severity").toString();
-        String description = request.get("description").toString();
-
-        return ruleService.addRule(ingredientA, ingredientB, severity, description);
+    public InteractionRule addRule(@RequestBody InteractionRule rule) {
+        return ruleService.addRule(rule);
     }
 
-    // GET /rules
     @GetMapping
     public List<InteractionRule> getAllRules() {
         return ruleService.getAllRules();
