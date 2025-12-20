@@ -1,8 +1,7 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class InteractionRule {
@@ -19,6 +18,7 @@ public class InteractionRule {
     @JoinColumn(name = "ingredient_b_id", nullable = false)
     private ActiveIngredient ingredientB;
 
+    @NotNull(message = "Severity must be MINOR, MODERATE, or MAJOR")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Severity severity;
@@ -26,22 +26,13 @@ public class InteractionRule {
     @Column(length = 500)
     private String description;
 
-    // Enum for severity with JSON support
     public enum Severity {
-        MINOR, MODERATE, MAJOR;
-
-        @JsonCreator
-        public static Severity fromString(String value) {
-            return Severity.valueOf(value.trim().toUpperCase());
-        }
-
-        @JsonValue
-        public String toValue() {
-            return this.name();
-        }
+        MINOR,
+        MODERATE,
+        MAJOR
     }
 
-    // Getters & setters
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
