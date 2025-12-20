@@ -2,8 +2,8 @@ package com.example.demo.dto;
 
 public class AuthResponse {
 
-    private String token;
-    private String message;
+    private String token = "";       // default empty token
+    private String message = "";     // default empty message
 
     // Constructors
     public AuthResponse() {}
@@ -13,7 +13,7 @@ public class AuthResponse {
         this.message = message;
     }
 
-    // Getters & Setters
+    // Getters and Setters
     public String getToken() {
         return token;
     }

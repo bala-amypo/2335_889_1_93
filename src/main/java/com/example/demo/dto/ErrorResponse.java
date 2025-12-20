@@ -4,20 +4,20 @@ import java.time.LocalDateTime;
 
 public class ErrorResponse {
 
-    private String message;
-    private LocalDateTime timestamp;
-    private int status;
+    private String message = "";                 // default empty message
+    private LocalDateTime timestamp = LocalDateTime.now();
+    private int status = 0;
 
     // Constructors
     public ErrorResponse() {}
 
-    public ErrorResponse(String message, LocalDateTime timestamp, int status) {
+    public ErrorResponse(String message, int status) {
         this.message = message;
-        this.timestamp = timestamp;
         this.status = status;
+        this.timestamp = LocalDateTime.now();
     }
 
-    // Getters & Setters
+    // Getters and Setters
     public String getMessage() {
         return message;
     }
