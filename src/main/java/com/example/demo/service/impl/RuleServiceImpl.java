@@ -1,31 +1,57 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.ActiveIngredient;
+import com.example.demo.model.InteractionRule;
+import com.example.demo.repository.ActiveIngredientRepository;
+import com.example.demo.repository.InteractionRuleRepository;
+import com.example.demo.service.RuleService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class RuleServiceImpl implements RuleService {
 
-    private final InteractionRuleRepository ruleRepo;
-    private final ActiveIngredientRepository ingredientRepo;
+    private final InteractionRuleRepository ruleRepository;
+    private final ActiveIngredientRepository ingredientRepository;
 
-    public RuleServiceImpl(InteractionRuleRepository r, ActiveIngredientRepository i) {
-        this.ruleRepo = r;
-        this.ingredientRepo = i;
+    public RuleServiceImpl(InteractionRuleRepository ruleRepository, ActiveIngredientRepository ingredientRepository) {
+        this.ruleRepository = ruleRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
-    public InteractionRule addRule(Long a, Long b, String severity, String desc) {
+    @Override
+    public InteractionRule addRule(InteractionRule rule) {
+        // Ensure both ingredients exist
+        ActiveIngredient a = ingredientRepository.findById(rule.getIngredientA().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Ingredient A not found"));
+        ActiveIngredient b = ingredientRepository.findById(rule.getIngredientB().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Ingredient B not found"));
 
-        if (!List.of("MINOR","MODERATE","MAJOR").contains(severity))
-            throw new IllegalArgumentException("Invalid severity");
+        rule.setIngredientA(a);
+        rule.setIngredientB(b);
 
-        ruleRepo.findRuleBetweenIngredients(a, b)
-                .ifPresent(r -> { throw new IllegalArgumentException("Rule exists"); });
+        // Check severity
+        if (!"MINOR".equalsIgnoreCase(rule.getSeverity()) &&
+            !"MODERATE".equalsIgnoreCase(rule.getSeverity()) &&
+            !"MAJOR".equalsIgnoreCase(rule.getSeverity())) {
+            throw new IllegalArgumentException("Severity must be MINOR, MODERATE, or MAJOR");
+        }
 
-        return ruleRepo.save(new InteractionRule(
-                ingredientRepo.findById(a).orElseThrow(),
-                ingredientRepo.findById(b).orElseThrow(),
-                severity,
-                desc
-        ));
+        // Check uniqueness (A-B or B-A)
+        Optional<InteractionRule> existing = ruleRepository.findAll().stream()
+                .filter(r -> (r.getIngredientA().getId().equals(a.getId()) && r.getIngredientB().getId().equals(b.getId()))
+                          || (r.getIngredientA().getId().equals(b.getId()) && r.getIngredientB().getId().equals(a.getId())))
+                .findAny();
+
+        if (existing.isPresent()) throw new IllegalArgumentException("Rule already exists for this ingredient pair");
+
+        return ruleRepository.save(rule);
     }
 
+    @Override
     public List<InteractionRule> getAllRules() {
-        return ruleRepo.findAll();
+        return ruleRepository.findAll();
     }
 }

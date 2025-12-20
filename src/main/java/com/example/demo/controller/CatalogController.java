@@ -1,55 +1,38 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Catalog;
-import com.example.demo.entity.Medication;
-import com.example.demo.repository.CatalogRepository;
-import com.example.demo.repository.MedicationRepository;
+import com.example.demo.model.ActiveIngredient;
+import com.example.demo.model.Medication;
+import com.example.demo.service.CatalogService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @RestController
-@RequestMapping("/api/catalogs")
+@RequestMapping("/catalog")
 public class CatalogController {
 
-    private final CatalogRepository catalogRepository;
-    private final MedicationRepository medicationRepository;
+    private final CatalogService catalogService;
 
-    public CatalogController(CatalogRepository catalogRepository, MedicationRepository medicationRepository) {
-        this.catalogRepository = catalogRepository;
-        this.medicationRepository = medicationRepository;
+    public CatalogController(CatalogService catalogService) {
+        this.catalogService = catalogService;
     }
 
-    @GetMapping
-    public List<Catalog> getAllCatalogs() {
-        return catalogRepository.findAll();
+    @PostMapping("/ingredient")
+    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
+        return catalogService.addIngredient(ingredient);
     }
 
-    @GetMapping("/{id}")
-    public Catalog getCatalogById(@PathVariable Long id) {
-        return catalogRepository.findById(id).orElse(null);
+    @PostMapping("/medication")
+    public Medication addMedication(@RequestParam String name,
+                                    @RequestBody Set<ActiveIngredient> ingredients) {
+        Medication medication = new Medication(name);
+        medication.setIngredients(ingredients);
+        return catalogService.addMedication(medication);
     }
 
-    @PostMapping
-    public Catalog createCatalog(@RequestBody Catalog catalog) {
-        return catalogRepository.save(catalog);
-    }
-
-    @PutMapping("/{id}")
-    public Catalog updateCatalog(@PathVariable Long id, @RequestBody Catalog catalogDetails) {
-        Optional<Catalog> optionalCatalog = catalogRepository.findById(id);
-        if (optionalCatalog.isPresent()) {
-            Catalog catalog = optionalCatalog.get();
-            catalog.setName(catalogDetails.getName());
-            catalog.setMedications(catalogDetails.getMedications());
-            return catalogRepository.save(catalog);
-        }
-        return null;
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteCatalog(@PathVariable Long id) {
-        catalogRepository.deleteById(id);
+    @GetMapping("/medications")
+    public List<Medication> getAllMedications() {
+        return catalogService.getAllMedications();
     }
 }
