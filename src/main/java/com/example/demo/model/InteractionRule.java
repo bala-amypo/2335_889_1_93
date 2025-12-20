@@ -1,13 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
-@Table(name = "interaction_rules")
-@Getter
-@Setter
 public class InteractionRule {
 
     @Id
@@ -15,14 +10,52 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_a_id", nullable = false)
     private ActiveIngredient ingredientA;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_b_id", nullable = false)
     private ActiveIngredient ingredientB;
 
     private String severity;
-
     private String description;
+
+    // getters & setters
+    public Long getId() {
+        return id;
+    }
+ 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ActiveIngredient getIngredientA() {
+        return ingredientA;
+    }
+
+    public void setIngredientA(ActiveIngredient ingredientA) {
+        this.ingredientA = ingredientA;
+    }
+
+    public ActiveIngredient getIngredientB() {
+        return ingredientB;
+    }
+
+    public void setIngredientB(ActiveIngredient ingredientB) {
+        this.ingredientB = ingredientB;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+ 
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+ 
+    public String getDescription() {
+        return description;
+    }
+ 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
