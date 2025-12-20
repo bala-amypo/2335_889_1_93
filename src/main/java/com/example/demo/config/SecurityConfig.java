@@ -32,7 +32,7 @@ public class SecurityConfig {
     }
 
     /**
-     * AuthenticationManager bean required for authentication.
+     * AuthenticationManager bean required for authentication injection.
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -48,9 +48,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/auth/**",            // Authentication endpoints
-                    "/swagger-ui/**",      // Swagger UI
-                    "/v3/api-docs/**"      // OpenAPI docs
+                    "/auth/**",           // Authentication endpoints
+                    "/swagger-ui/**",     // Swagger UI
+                    "/v3/api-docs/**",    // OpenAPI docs
+                    "/rules/**"           // Allow your rules API endpoints for testing
                 ).permitAll()
                 .anyRequest().authenticated() // All other endpoints require authentication
             )

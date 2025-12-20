@@ -14,7 +14,8 @@ import java.io.IOException;
 
 /**
  * JWT authentication filter.
- * Replace the dummy token logic with real JWT validation.
+ * This is a simple filter using a dummy token for testing purposes.
+ * Replace with real JWT validation logic in production.
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -31,15 +32,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
+            // Simple check against a dummy token
             if (DUMMY_TOKEN.equals(token)) {
+                // Create an authenticated user for testing
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken("user", null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+                // Set authentication in security context
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
+        // Continue the filter chain
         filterChain.doFilter(request, response);
     }
 }
