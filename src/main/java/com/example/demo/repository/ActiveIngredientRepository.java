@@ -1,6 +1,6 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.ActiveIngredient;
+import com.example.demo.model.ActiveIngredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
