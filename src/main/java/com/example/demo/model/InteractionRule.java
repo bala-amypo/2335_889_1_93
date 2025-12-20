@@ -20,7 +20,7 @@ public class InteractionRule {
 
     @ManyToOne
     @JoinColumn(name = "ingredientB_id", nullable = false)
-    @JsonIgnore
+   
     private ActiveIngredient ingredientB;
 
     private String severity; // MINOR, MODERATE, MAJOR
