@@ -1,16 +1,18 @@
 package com.example.demo.dto;
 
+/**
+ * DTO for login response
+ */
 public class AuthResponse {
 
-    private String token = "";       // default empty token
-    private String message = "";     // default empty message
+    private String token;
+    private String username;
 
-    // Constructors
     public AuthResponse() {}
 
-    public AuthResponse(String token, String message) {
+    public AuthResponse(String token, String username) {
         this.token = token;
-        this.message = message;
+        this.username = username;
     }
 
     // Getters and Setters
@@ -22,11 +24,11 @@ public class AuthResponse {
         this.token = token;
     }
 
-    public String getMessage() {
-        return message;
+    public String getUsername() {
+        return username;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

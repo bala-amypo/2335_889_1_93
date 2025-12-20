@@ -2,14 +2,18 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 
+/**
+ * Standard DTO for API errors
+ */
 public class ErrorResponse {
 
-    private String message = "";                 // default empty message
-    private LocalDateTime timestamp = LocalDateTime.now();
-    private int status = 0;
+    private String message;
+    private LocalDateTime timestamp;
+    private int status;
 
-    // Constructors
-    public ErrorResponse() {}
+    public ErrorResponse() {
+        this.timestamp = LocalDateTime.now();
+    }
 
     public ErrorResponse(String message, int status) {
         this.message = message;
