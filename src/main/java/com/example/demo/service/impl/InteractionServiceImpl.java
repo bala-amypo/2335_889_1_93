@@ -55,13 +55,16 @@ public class InteractionServiceImpl implements InteractionService {
                 Map<String, String> interaction = new HashMap<>();
                 interaction.put("ingredientA", rule.getIngredientA().getName());
                 interaction.put("ingredientB", rule.getIngredientB().getName());
-                interaction.put("severity", rule.getSeverity());
+                interaction.put("severity", rule.getSeverity().name()); // convert enum to String
                 interaction.put("description", rule.getDescription());
                 interactions.add(interaction);
             }
         }
 
-        String medNames = medications.stream().map(Medication::getName).collect(Collectors.joining(", "));
+        String medNames = medications.stream()
+                .map(Medication::getName)
+                .collect(Collectors.joining(", "));
+
         String interactionsJson = interactions.isEmpty() ? "[]" : interactions.toString();
 
         InteractionCheckResult result = new InteractionCheckResult(medNames, interactionsJson);
@@ -71,6 +74,7 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public InteractionCheckResult getResult(Long resultId) {
         return resultRepository.findById(resultId)
-                .orElseThrow(() -> new ResourceNotFoundException("Interaction check result not found with ID: " + resultId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Interaction check result not found with ID: " + resultId));
     }
 }
