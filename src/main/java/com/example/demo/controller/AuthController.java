@@ -1,35 +1,38 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
-import com.example.demo.service.AuthService;
+import com.example.demo.service.UserService;
+import com.example.demo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
-    // Register a new user
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User createdUser = authService.registerUser(user);
-        return ResponseEntity.ok(createdUser);
+    public User register(@RequestBody User user) {
+        return userService.registerUser(user);
     }
 
-    // Get all users
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = authService.getAllUsers();
-        return ResponseEntity.ok(users);
+    @PostMapping("/login")
+    public String login(@RequestBody User user) {
+        User existingUser = userService.findByEmail(user.getEmail());
+        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials");
+        }
+        return jwtUtil.generateToken(existingUser.getId(), existingUser.getEmail(), existingUser.getRole());
     }
 }
