@@ -22,18 +22,20 @@ public class Medication {
     private List<ActiveIngredient> ingredients;
 
     public Medication() {}
-    public Medication(String name) { this.name = name; }
 
-    // getters and setters
-}
+    public Medication(String name, List<ActiveIngredient> ingredients) {
+        this.name = name;
+        this.ingredients = ingredients;
+    }
 
     // Getters and Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Set<ActiveIngredient> getIngredients() { return ingredients; }
-    public void setIngredients(Set<ActiveIngredient> ingredients) { this.ingredients = ingredients; }
+    public List<ActiveIngredient> getIngredients() { return ingredients; }
+    public void setIngredients(List<ActiveIngredient> ingredients) { this.ingredients = ingredients; }
 }
