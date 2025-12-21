@@ -15,3 +15,4 @@ public interface ActiveIngredientRepository extends JpaRepository<ActiveIngredie
     // Check if ingredient exists by name
     boolean existsByName(String name);
 }
+
