@@ -1,42 +1,28 @@
-package com.example.demo.model;
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.model.InteractionCheckResult;
+import com.example.demo.service.InteractionService;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-@Table(name = "interaction_check_results")
-public class InteractionCheckResult {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@RestController
+@RequestMapping("/interact")
+public class InteractionController {
 
-    @Column(nullable = false, length = 1000)
-    private String medications; // comma-separated medication names
+    private final InteractionService interactionService;
 
-    @Column(nullable = false, length = 2000)
-    private String interactions; // JSON summary
-
-    @Column(nullable = false)
-    private LocalDateTime checkedAt;
-
-    public InteractionCheckResult() {}
-
-    public InteractionCheckResult(String medications, String interactions) {
-        this.medications = medications;
-        this.interactions = interactions;
-        this.checkedAt = LocalDateTime.now();
+    public InteractionController(InteractionService interactionService) {
+        this.interactionService = interactionService;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @PostMapping("/check")
+    public InteractionCheckResult checkInteractions(@RequestBody List<Long> medicationIds) {
+        return interactionService.checkInteractions(medicationIds);
+    }
 
-    public String getMedications() { return medications; }
-    public void setMedications(String medications) { this.medications = medications; }
-
-    public String getInteractions() { return interactions; }
-    public void setInteractions(String interactions) { this.interactions = interactions; }
-
-    public LocalDateTime getCheckedAt() { return checkedAt; }
-    public void setCheckedAt(LocalDateTime checkedAt) { this.checkedAt = checkedAt; }
+    @GetMapping("/result/{id}")
+    public InteractionCheckResult getResult(@PathVariable Long id) {
+        return interactionService.getResult(id);
+    }
 }
