@@ -18,16 +18,15 @@ public class CatalogServiceImpl implements CatalogService {
     private final ActiveIngredientRepository ingredientRepo;
     private final MedicationRepository medicationRepo;
 
-    public CatalogServiceImpl(
-            ActiveIngredientRepository ingredientRepo,
-            MedicationRepository medicationRepo) {
+    public CatalogServiceImpl(ActiveIngredientRepository ingredientRepo,
+                              MedicationRepository medicationRepo) {
         this.ingredientRepo = ingredientRepo;
         this.medicationRepo = medicationRepo;
     }
 
+    // -------------------- ActiveIngredient --------------------
     @Override
     public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-
         if (ingredient == null || ingredient.getName() == null || ingredient.getName().isBlank()) {
             throw new IllegalArgumentException("Ingredient name must not be empty");
         }
@@ -43,29 +42,29 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Medication addMedication(Medication medication) {
+    public List<ActiveIngredient> getAllIngredients() {
+        return ingredientRepo.findAll();
+    }
 
-        if (medication == null) {
-            throw new IllegalArgumentException("Medication must not be null");
+    // -------------------- Medication --------------------
+    @Override
+    public Medication addMedication(Medication medication) {
+        if (medication == null || medication.getName() == null || medication.getName().isBlank()) {
+            throw new IllegalArgumentException("Medication name must not be empty");
         }
 
         if (medication.getIngredients() == null || medication.getIngredients().isEmpty()) {
             throw new IllegalArgumentException("Medication must have at least one ingredient");
         }
 
-        // Defensive copy → PASSES IMMUTABILITY TEST
-        Set<ActiveIngredient> safeSet = new HashSet<>();
-
+        Set<ActiveIngredient> safeIngredients = new HashSet<>();
         for (ActiveIngredient ing : medication.getIngredients()) {
             ActiveIngredient dbIngredient = ingredientRepo.findById(ing.getId())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Ingredient not found: " + ing.getId()));
-
-            safeSet.add(dbIngredient);
+                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found: " + ing.getId()));
+            safeIngredients.add(dbIngredient);
         }
 
-        medication.setIngredients(safeSet);
+        medication.setIngredients(safeIngredients);
         return medicationRepo.save(medication);
     }
 

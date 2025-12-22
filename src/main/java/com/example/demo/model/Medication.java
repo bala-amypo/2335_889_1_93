@@ -1,34 +1,35 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "medications")
 public class Medication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    // Many-to-many relationship with ActiveIngredient
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
-            name = "medication_ingredient",
+            name = "medication_ingredients",
             joinColumns = @JoinColumn(name = "medication_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private List<ActiveIngredient> ingredients;
+    private Set<ActiveIngredient> ingredients = new HashSet<>();
 
-    // Getters & setters
+    public Medication() {}
+
+    public Medication(String name) {
+        this.name = name;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public List<ActiveIngredient> getIngredients() { return ingredients; }
-    public void setIngredients(List<ActiveIngredient> ingredients) { this.ingredients = ingredients; }
-}
+    public String getName(
