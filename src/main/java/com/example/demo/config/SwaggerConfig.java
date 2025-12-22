@@ -18,7 +18,7 @@ public class SwaggerConfig { // Changed to capital 'S'
                         .version("1.0")
                         .description("API for checking medication interactions"))
                 .servers(List.of(
-                        new Server().url("https://9187.pro604cr.amypo.ai/")
+                        new Server().url("https://9313.pro604cr.amypo.ai/")
                 ));
     }
 }
