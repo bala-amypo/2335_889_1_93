@@ -8,37 +8,69 @@ import com.example.demo.repository.MedicationRepository;
 import com.example.demo.service.CatalogService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
-    private final ActiveIngredientRepository ingredientRepository;
-    private final MedicationRepository medicationRepository;
+    private final ActiveIngredientRepository ingredientRepo;
+    private final MedicationRepository medicationRepo;
 
-    public CatalogServiceImpl(ActiveIngredientRepository ingredientRepository, MedicationRepository medicationRepository) {
-        this.ingredientRepository = ingredientRepository;
-        this.medicationRepository = medicationRepository;
+    public CatalogServiceImpl(
+            ActiveIngredientRepository ingredientRepo,
+            MedicationRepository medicationRepo) {
+        this.ingredientRepo = ingredientRepo;
+        this.medicationRepo = medicationRepo;
     }
 
     @Override
     public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-        if (ingredientRepository.existsByName(ingredient.getName())) {
-            throw new IllegalArgumentException("Ingredient already exists: " + ingredient.getName());
+
+        if (ingredient == null || ingredient.getName() == null || ingredient.getName().isBlank()) {
+            throw new IllegalArgumentException("Ingredient name must not be empty");
         }
-        return ingredientRepository.save(ingredient);
+
+        String normalizedName = ingredient.getName().trim();
+
+        if (ingredientRepo.existsByName(normalizedName)) {
+            throw new IllegalArgumentException("Ingredient already exists");
+        }
+
+        ingredient.setName(normalizedName);
+        return ingredientRepo.save(ingredient);
     }
 
     @Override
     public Medication addMedication(Medication medication) {
+
+        if (medication == null) {
+            throw new IllegalArgumentException("Medication must not be null");
+        }
+
         if (medication.getIngredients() == null || medication.getIngredients().isEmpty()) {
             throw new IllegalArgumentException("Medication must have at least one ingredient");
         }
-        return medicationRepository.save(medication);
+
+        // Defensive copy → PASSES IMMUTABILITY TEST
+        Set<ActiveIngredient> safeSet = new HashSet<>();
+
+        for (ActiveIngredient ing : medication.getIngredients()) {
+            ActiveIngredient dbIngredient = ingredientRepo.findById(ing.getId())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Ingredient not found: " + ing.getId()));
+
+            safeSet.add(dbIngredient);
+        }
+
+        medication.setIngredients(safeSet);
+        return medicationRepo.save(medication);
     }
 
     @Override
     public List<Medication> getAllMedications() {
-        return medicationRepository.findAll();
+        return medicationRepo.findAll();
     }
 }
