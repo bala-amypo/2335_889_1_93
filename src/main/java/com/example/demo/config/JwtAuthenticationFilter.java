@@ -12,13 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * JWT authentication filter.
- * 
- * This filter checks for the presence of a JWT token in the "Authorization" header.
- * Currently, it uses a dummy token for demonstration purposes.
- * Replace this logic with actual JWT verification in production.
- */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
