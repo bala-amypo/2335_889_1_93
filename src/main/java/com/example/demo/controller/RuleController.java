@@ -1,36 +1,46 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.InteractionRuleRequest;
+import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.InteractionRule;
+import com.example.demo.service.RuleService;
 import com.example.demo.repository.ActiveIngredientRepository;
-import com.example.demo.repository.InteractionRuleRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rules")
 public class RuleController {
 
-    private final InteractionRuleRepository ruleRepo;
+    private final RuleService ruleService;
     private final ActiveIngredientRepository ingredientRepo;
 
-    public RuleController(InteractionRuleRepository ruleRepo, ActiveIngredientRepository ingredientRepo) {
-        this.ruleRepo = ruleRepo;
+    public RuleController(RuleService ruleService, ActiveIngredientRepository ingredientRepo) {
+        this.ruleService = ruleService;
         this.ingredientRepo = ingredientRepo;
     }
 
     @PostMapping
-    public ResponseEntity<?> createRule(@RequestBody InteractionRule rule) {
-        // Ensure ingredients exist
-        ingredientRepo.findById(rule.getIngredientA().getId())
-                .orElseThrow(() -> new RuntimeException("Ingredient A not found"));
-        ingredientRepo.findById(rule.getIngredientB().getId())
-                .orElseThrow(() -> new RuntimeException("Ingredient B not found"));
+    public InteractionRule addRule(@RequestBody InteractionRuleRequest request) {
 
-        // Ensure severity is valid
-        if (rule.getSeverity() == null) {
-            return ResponseEntity.badRequest().body("Severity must be MINOR, MODERATE, or MAJOR");
-        }
+        ActiveIngredient ingredientA = ingredientRepo.findById(request.getIngredientAId())
+                .orElseThrow(() -> new IllegalArgumentException("IngredientA not found"));
+        ActiveIngredient ingredientB = ingredientRepo.findById(request.getIngredientBId())
+                .orElseThrow(() -> new IllegalArgumentException("IngredientB not found"));
 
-        return ResponseEntity.ok(ruleRepo.save(rule));
+        InteractionRule rule = new InteractionRule(
+                ingredientA,
+                ingredientB,
+                request.getSeverity(),
+                request.getDescription()
+        );
+
+        return ruleService.addRule(rule);
+    }
+
+    @GetMapping
+    public List<InteractionRule> getAllRules() {
+        return ruleService.getAllRules();
     }
 }

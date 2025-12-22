@@ -3,6 +3,10 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(
+    name = "interaction_rules",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"ingredientA_id", "ingredientB_id"})
+)
 public class InteractionRule {
 
     @Id
@@ -10,23 +14,29 @@ public class InteractionRule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "ingredientA_id", nullable = false)
     private ActiveIngredient ingredientA;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "ingredientB_id", nullable = false)
     private ActiveIngredient ingredientB;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Severity severity;
+    private String severity; // MINOR, MODERATE, MAJOR
 
-    @Column(length = 500)
+    @Column(nullable = false)
     private String description;
 
-    public enum Severity { MINOR, MODERATE, MAJOR }
+    public InteractionRule() {}
 
-    // Getters & setters
+    public InteractionRule(ActiveIngredient ingredientA, ActiveIngredient ingredientB,
+                           String severity, String description) {
+        this.ingredientA = ingredientA;
+        this.ingredientB = ingredientB;
+        this.severity = severity;
+        this.description = description;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -36,8 +46,8 @@ public class InteractionRule {
     public ActiveIngredient getIngredientB() { return ingredientB; }
     public void setIngredientB(ActiveIngredient ingredientB) { this.ingredientB = ingredientB; }
 
-    public Severity getSeverity() { return severity; }
-    public void setSeverity(Severity severity) { this.severity = severity; }
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
