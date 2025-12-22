@@ -24,24 +24,31 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // Password encoder bean
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Authentication manager bean
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
+    // Security filter chain
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .authorizeHttpRequests()
-            .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // public endpoints
-            .anyRequest().authenticated() // all other endpoints require JWT
-            .and()
+            .csrf(csrf -> csrf.disable()) // disable CSRF
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/auth/**",          // allow auth endpoints
+                    "/swagger-ui/**",     // allow swagger UI
+                    "/v3/api-docs/**"     // allow OpenAPI docs
+                ).permitAll()
+                .anyRequest().authenticated() // all other endpoints require JWT
+            )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
