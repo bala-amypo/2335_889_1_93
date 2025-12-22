@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.InteractionRuleRequest;
-import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.InteractionRule;
-import com.example.demo.service.RuleService;
-import com.example.demo.repository.ActiveIngredientRepository;
+import com.example.demo.service.impl.RuleServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,29 +10,14 @@ import java.util.List;
 @RequestMapping("/rules")
 public class RuleController {
 
-    private final RuleService ruleService;
-    private final ActiveIngredientRepository ingredientRepo;
+    private final RuleServiceImpl ruleService;
 
-    public RuleController(RuleService ruleService, ActiveIngredientRepository ingredientRepo) {
+    public RuleController(RuleServiceImpl ruleService) {
         this.ruleService = ruleService;
-        this.ingredientRepo = ingredientRepo;
     }
 
     @PostMapping
-    public InteractionRule addRule(@RequestBody InteractionRuleRequest request) {
-
-        ActiveIngredient ingredientA = ingredientRepo.findById(request.getIngredientAId())
-                .orElseThrow(() -> new IllegalArgumentException("IngredientA not found"));
-        ActiveIngredient ingredientB = ingredientRepo.findById(request.getIngredientBId())
-                .orElseThrow(() -> new IllegalArgumentException("IngredientB not found"));
-
-        InteractionRule rule = new InteractionRule(
-                ingredientA,
-                ingredientB,
-                request.getSeverity(),
-                request.getDescription()
-        );
-
+    public InteractionRule addRule(@RequestBody InteractionRule rule) {
         return ruleService.addRule(rule);
     }
 

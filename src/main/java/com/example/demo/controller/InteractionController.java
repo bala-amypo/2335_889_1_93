@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.InteractionCheckResult;
-import com.example.demo.service.InteractionService;
+import com.example.demo.service.impl.InteractionServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
 @RequestMapping("/interact")
 public class InteractionController {
 
-    private final InteractionService interactionService;
+    private final InteractionServiceImpl interactionService;
 
-    public InteractionController(InteractionService interactionService) {
+    public InteractionController(InteractionServiceImpl interactionService) {
         this.interactionService = interactionService;
     }
 
