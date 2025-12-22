@@ -11,15 +11,16 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
-    private String medications; // Comma-separated medication names
+    @Column(nullable = false, length = 1000)
+    private String medications; // comma-separated medication names
 
-    @Column(columnDefinition = "TEXT")
+    @Column(nullable = false, length = 2000)
     private String interactions; // JSON summary
 
+    @Column(nullable = false)
     private LocalDateTime checkedAt;
 
-    public InteractionCheckResult() { }
+    public InteractionCheckResult() {}
 
     public InteractionCheckResult(String medications, String interactions) {
         this.medications = medications;
@@ -27,12 +28,6 @@ public class InteractionCheckResult {
         this.checkedAt = LocalDateTime.now();
     }
 
-    @PrePersist
-    public void prePersist() {
-        if (checkedAt == null) checkedAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
