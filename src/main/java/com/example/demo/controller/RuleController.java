@@ -17,23 +17,30 @@ public class RuleController {
         this.ruleService = ruleService;
     }
 
+    // Create
     @PostMapping
-    public ResponseEntity<InteractionRule> addRule(@RequestBody InteractionRule rule) {
-        return ResponseEntity.ok(ruleService.saveRule(rule));
+    public ResponseEntity<InteractionRule> createRule(@RequestBody InteractionRule rule) {
+        InteractionRule savedRule = ruleService.saveRule(rule);
+        return ResponseEntity.ok(savedRule);
     }
 
+    // Read all
     @GetMapping
     public ResponseEntity<List<InteractionRule>> getAllRules() {
         return ResponseEntity.ok(ruleService.getAllRules());
     }
 
+    // Read by ID
     @GetMapping("/{id}")
-    public ResponseEntity<InteractionRule> getRule(@PathVariable Long id) {
+    public ResponseEntity<InteractionRule> getRuleById(@PathVariable Long id) {
         InteractionRule rule = ruleService.getRuleById(id);
-        if (rule == null) return ResponseEntity.notFound().build();
+        if (rule == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(rule);
     }
 
+    // Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRule(@PathVariable Long id) {
         ruleService.deleteRule(id);

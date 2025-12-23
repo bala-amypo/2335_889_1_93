@@ -3,73 +3,44 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "interaction_rules")
 public class InteractionRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private Ingredient ingredientA;
+    @Column(nullable = false)
+    private String ingredientA;
 
-    @Embedded
-    private Ingredient ingredientB;
+    @Column(nullable = false)
+    private String ingredientB;
 
     private String severity;
     private String description;
 
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Ingredient getIngredientA() {
-        return ingredientA;
-    }
-
-    public void setIngredientA(Ingredient ingredientA) {
+    // Constructors
+    public InteractionRule() {}
+    public InteractionRule(String ingredientA, String ingredientB, String severity, String description) {
         this.ingredientA = ingredientA;
-    }
-
-    public Ingredient getIngredientB() {
-        return ingredientB;
-    }
-
-    public void setIngredientB(Ingredient ingredientB) {
         this.ingredientB = ingredientB;
-    }
-
-    public String getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(String severity) {
         this.severity = severity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
     }
 
-    @Embeddable
-    public static class Ingredient {
-        private Long id;
-        private String name;
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-        // Getters and Setters
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
+    public String getIngredientA() { return ingredientA; }
+    public void setIngredientA(String ingredientA) { this.ingredientA = ingredientA; }
 
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-    }
+    public String getIngredientB() { return ingredientB; }
+    public void setIngredientB(String ingredientB) { this.ingredientB = ingredientB; }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

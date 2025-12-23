@@ -1,11 +1,40 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.model.InteractionRule;
-import java.util.List;
+import com.example.demo.repository.InteractionRuleRepository;
+import com.example.demo.service.RuleService;
+import org.springframework.stereotype.Service;
 
-public interface RuleService {
-    InteractionRule saveRule(InteractionRule rule);
-    List<InteractionRule> getAllRules();
-    InteractionRule getRuleById(Long id);
-    void deleteRule(Long id);
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class RuleServiceImpl implements RuleService {
+
+    private final InteractionRuleRepository ruleRepository;
+
+    public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
+    }
+
+    @Override
+    public InteractionRule saveRule(InteractionRule rule) {
+        return ruleRepository.save(rule);
+    }
+
+    @Override
+    public List<InteractionRule> getAllRules() {
+        return ruleRepository.findAll();
+    }
+
+    @Override
+    public InteractionRule getRuleById(Long id) {
+        Optional<InteractionRule> rule = ruleRepository.findById(id);
+        return rule.orElse(null);
+    }
+
+    @Override
+    public void deleteRule(Long id) {
+        ruleRepository.deleteById(id);
+    }
 }
