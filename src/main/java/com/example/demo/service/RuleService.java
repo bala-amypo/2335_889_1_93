@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface RuleService {
 
-    InteractionRule addRule(InteractionRule rule);
+    InteractionRule save(InteractionRule rule);
 
-    List<InteractionRule> getAllRules();
+    List<InteractionRule> findAll();
 }
