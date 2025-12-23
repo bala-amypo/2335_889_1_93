@@ -1,7 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.model.InteractionRule;
 import com.example.demo.repository.InteractionRuleRepository;
+import com.example.demo.service.RuleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,5 +24,10 @@ public class RuleServiceImpl implements RuleService {
     @Override
     public List<InteractionRule> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public void deleteRule(Long id) {
+        repository.deleteById(id);
     }
 }

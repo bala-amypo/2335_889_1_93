@@ -26,4 +26,9 @@ public class RuleController {
     public List<InteractionRule> getAllRules() {
         return ruleService.findAll();
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteRule(@PathVariable Long id) {
+        ruleService.deleteRule(id);
+    }
 }
