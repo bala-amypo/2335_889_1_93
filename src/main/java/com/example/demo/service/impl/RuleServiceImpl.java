@@ -4,7 +4,6 @@ import com.example.demo.model.InteractionRule;
 import com.example.demo.repository.InteractionRuleRepository;
 import com.example.demo.service.RuleService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

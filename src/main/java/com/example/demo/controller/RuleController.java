@@ -3,12 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.model.InteractionRule;
 import com.example.demo.service.RuleService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/rules")
-@CrossOrigin(origins = "*") // allow all origins temporarily
+@CrossOrigin(origins = "*") // solves CORS/403 issues
 public class RuleController {
 
     private final RuleService ruleService;
