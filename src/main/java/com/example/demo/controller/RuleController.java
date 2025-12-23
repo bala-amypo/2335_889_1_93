@@ -2,12 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.model.InteractionRule;
 import com.example.demo.service.RuleService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/rules")
-@CrossOrigin(origins = "*") // solves CORS/403 issues
 public class RuleController {
 
     private final RuleService ruleService;
@@ -17,17 +18,25 @@ public class RuleController {
     }
 
     @PostMapping
-    public InteractionRule createRule(@RequestBody InteractionRule rule) {
-        return ruleService.save(rule);
+    public ResponseEntity<InteractionRule> addRule(@RequestBody InteractionRule rule) {
+        return ResponseEntity.ok(ruleService.saveRule(rule));
     }
 
     @GetMapping
-    public List<InteractionRule> getAllRules() {
-        return ruleService.findAll();
+    public ResponseEntity<List<InteractionRule>> getAllRules() {
+        return ResponseEntity.ok(ruleService.getAllRules());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InteractionRule> getRule(@PathVariable Long id) {
+        InteractionRule rule = ruleService.getRuleById(id);
+        if (rule == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(rule);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRule(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRule(@PathVariable Long id) {
         ruleService.deleteRule(id);
+        return ResponseEntity.noContent().build();
     }
 }

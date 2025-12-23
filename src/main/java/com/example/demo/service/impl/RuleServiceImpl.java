@@ -4,7 +4,9 @@ import com.example.demo.model.InteractionRule;
 import com.example.demo.repository.InteractionRuleRepository;
 import com.example.demo.service.RuleService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RuleServiceImpl implements RuleService {
@@ -16,13 +18,19 @@ public class RuleServiceImpl implements RuleService {
     }
 
     @Override
-    public InteractionRule save(InteractionRule rule) {
+    public InteractionRule saveRule(InteractionRule rule) {
         return repository.save(rule);
     }
 
     @Override
-    public List<InteractionRule> findAll() {
+    public List<InteractionRule> getAllRules() {
         return repository.findAll();
+    }
+
+    @Override
+    public InteractionRule getRuleById(Long id) {
+        Optional<InteractionRule> rule = repository.findById(id);
+        return rule.orElse(null);
     }
 
     @Override
