@@ -1,7 +1,13 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "interaction_check_results")
@@ -11,16 +17,16 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 1000)
-    private String medications; // comma-separated medication names
+    private String medications;
 
-    @Column(nullable = false, length = 2000)
-    private String interactions; // JSON summary
+    @Column(columnDefinition = "TEXT")
+    private String interactions;
 
-    @Column(nullable = false)
     private LocalDateTime checkedAt;
 
-    public InteractionCheckResult() {}
+    public InteractionCheckResult() {
+        this.checkedAt = LocalDateTime.now();
+    }
 
     public InteractionCheckResult(String medications, String interactions) {
         this.medications = medications;
@@ -28,15 +34,37 @@ public class InteractionCheckResult {
         this.checkedAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getMedications() { return medications; }
-    public void setMedications(String medications) { this.medications = medications; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getInteractions() { return interactions; }
-    public void setInteractions(String interactions) { this.interactions = interactions; }
+    public String getMedications() {
+        return medications;
+    }
 
-    public LocalDateTime getCheckedAt() { return checkedAt; }
-    public void setCheckedAt(LocalDateTime checkedAt) { this.checkedAt = checkedAt; }
+    public void setMedications(String medications) {
+        this.medications = medications;
+    }
+
+    public String getInteractions() {
+        return interactions;
+    }
+
+    public void setInteractions(String interactions) {
+        this.interactions = interactions;
+    }
+
+    public LocalDateTime getCheckedAt() {
+        return checkedAt;
+    }
+
+    public void setCheckedAt(LocalDateTime checkedAt) {
+        this.checkedAt = checkedAt;
+    }
+
+    
 }
