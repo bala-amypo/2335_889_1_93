@@ -38,7 +38,7 @@ public class CatalogServiceImpl implements CatalogService {
 
         for (ActiveIngredient ing : medication.getIngredients()) {
 
-            // ✅ Treat id = 0 as NEW
+            
             if (ing.getId() == null || ing.getId() <= 0) {
                 ing.setId(null);
                 managedIngredients.add(ingredientRepository.save(ing));
