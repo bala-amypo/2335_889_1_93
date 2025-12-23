@@ -12,46 +12,30 @@ public class InteractionRule {
     private String ingredientA;
     private String ingredientB;
     private String description;
+    private String severity;
 
-    // Constructors
     public InteractionRule() {}
 
-    public InteractionRule(String ingredientA, String ingredientB, String description) {
+    public InteractionRule(String ingredientA, String ingredientB, String description, String severity) {
         this.ingredientA = ingredientA;
         this.ingredientB = ingredientB;
         this.description = description;
+        this.severity = severity;
     }
 
-    // Getters & Setters
-    public Long getId() {
-        return id;
-    }
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getIngredientA() { return ingredientA; }
+    public void setIngredientA(String ingredientA) { this.ingredientA = ingredientA; }
 
-    public String getIngredientA() {
-        return ingredientA;
-    }
+    public String getIngredientB() { return ingredientB; }
+    public void setIngredientB(String ingredientB) { this.ingredientB = ingredientB; }
 
-    public void setIngredientA(String ingredientA) {
-        this.ingredientA = ingredientA;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getIngredientB() {
-        return ingredientB;
-    }
-
-    public void setIngredientB(String ingredientB) {
-        this.ingredientB = ingredientB;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
 }
