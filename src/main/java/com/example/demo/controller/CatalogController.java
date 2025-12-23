@@ -1,29 +1,32 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.ActiveIngredient;
-import com.example.demo.model.Medication;
-import com.example.demo.service.impl.CatalogServiceImpl;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.model.ActiveIngredient;
+import com.example.demo.model.Medication;
+import com.example.demo.service.CatalogService;
 
 @RestController
 @RequestMapping("/catalog")
 public class CatalogController {
 
-    private final CatalogServiceImpl catalogService;
+    private final CatalogService catalogService;
 
-    public CatalogController(CatalogServiceImpl catalogService) {
+    public CatalogController(CatalogService catalogService) {
         this.catalogService = catalogService;
     }
 
     @PostMapping("/ingredient")
-    public ActiveIngredient addIngredient(@RequestBody ActiveIngredient ingredient) {
+    public ActiveIngredient addIngredient(
+            @RequestBody ActiveIngredient ingredient) {
         return catalogService.addIngredient(ingredient);
     }
 
     @PostMapping("/medication")
-    public Medication addMedication(@RequestBody Medication medication) {
+    public Medication addMedication(
+            @RequestBody Medication medication) {
         return catalogService.addMedication(medication);
     }
 

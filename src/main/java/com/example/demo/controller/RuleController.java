@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.InteractionRule;
-import com.example.demo.service.RuleService;
-import org.springframework.http.ResponseEntity;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.model.InteractionRule;
+import com.example.demo.service.RuleService;
 
 @RestController
 @RequestMapping("/rules")
@@ -17,17 +17,13 @@ public class RuleController {
         this.ruleService = ruleService;
     }
 
-    // POST: Create new InteractionRule
     @PostMapping
-    public ResponseEntity<InteractionRule> createRule(@RequestBody InteractionRule rule) {
-        InteractionRule savedRule = ruleService.saveRule(rule);
-        return ResponseEntity.ok(savedRule);
+    public InteractionRule addRule(@RequestBody InteractionRule rule) {
+        return ruleService.addRule(rule);
     }
 
-    // GET: Retrieve all InteractionRules
     @GetMapping
-    public ResponseEntity<List<InteractionRule>> getAllRules() {
-        List<InteractionRule> rules = ruleService.getAllRules();
-        return ResponseEntity.ok(rules);
+    public List<InteractionRule> getAllRules() {
+        return ruleService.getAllRules();
     }
 }

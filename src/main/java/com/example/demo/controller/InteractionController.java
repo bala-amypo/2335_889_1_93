@@ -1,31 +1,44 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.InteractionRule;
-import com.example.demo.service.RuleService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.model.InteractionCheckResult;
+import com.example.demo.service.InteractionService;
+
 @RestController
-@RequestMapping("/rules")
+@RequestMapping("/interact")
 public class InteractionController {
 
-    private final RuleService ruleService;
+    private final InteractionService interactionService;
 
-    public InteractionController(RuleService ruleService) {
-        this.ruleService = ruleService;
+    public InteractionController(InteractionService interactionService) {
+        this.interactionService = interactionService;
     }
 
-    @PostMapping
-    public ResponseEntity<InteractionRule> createRule(@RequestBody InteractionRule rule) {
-        InteractionRule savedRule = ruleService.saveRule(rule);
-        return ResponseEntity.ok(savedRule);
+    /**
+     * POST /interact/check
+     * Check drug interactions
+     */
+    @PostMapping("/check")
+    public InteractionCheckResult checkInteractions(
+            @RequestBody List<Long> medicationIds) {
+        return interactionService.checkInteractions(medicationIds);
     }
 
-    @GetMapping
-    public ResponseEntity<List<InteractionRule>> getAllRules() {
-        List<InteractionRule> rules = ruleService.getAllRules();
-        return ResponseEntity.ok(rules);
+    /**
+     * GET /interact/result/{id}
+     * Get previous interaction result
+     */
+    @GetMapping("/result/{id}")
+    public InteractionCheckResult getResult(
+            @PathVariable Long id) {
+        return interactionService.getResult(id);
     }
 }
