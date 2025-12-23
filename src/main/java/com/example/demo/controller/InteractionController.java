@@ -17,14 +17,12 @@ public class InteractionController {
         this.ruleService = ruleService;
     }
 
-    // POST: Create a new rule
     @PostMapping
     public ResponseEntity<InteractionRule> createRule(@RequestBody InteractionRule rule) {
         InteractionRule savedRule = ruleService.saveRule(rule);
         return ResponseEntity.ok(savedRule);
     }
 
-    // GET: Get all rules
     @GetMapping
     public ResponseEntity<List<InteractionRule>> getAllRules() {
         List<InteractionRule> rules = ruleService.getAllRules();
