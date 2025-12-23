@@ -10,19 +10,19 @@ import java.util.List;
 @Service
 public class RuleServiceImpl implements RuleService {
 
-    private final InteractionRuleRepository ruleRepository;
+    private final InteractionRuleRepository repository;
 
-    public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
-        this.ruleRepository = ruleRepository;
+    public RuleServiceImpl(InteractionRuleRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public InteractionRule saveRule(InteractionRule rule) {
-        return ruleRepository.save(rule);
+        return repository.save(rule);
     }
 
     @Override
     public List<InteractionRule> getAllRules() {
-        return ruleRepository.findAll();
+        return repository.findAll();
     }
 }
