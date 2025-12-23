@@ -1,75 +1,64 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+
 import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.Medication;
 import com.example.demo.repository.ActiveIngredientRepository;
 import com.example.demo.repository.MedicationRepository;
 import com.example.demo.service.CatalogService;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
-    private final ActiveIngredientRepository ingredientRepo;
-    private final MedicationRepository medicationRepo;
+    private final ActiveIngredientRepository ingredientRepository;
+    private final MedicationRepository medicationRepository;
 
-    public CatalogServiceImpl(ActiveIngredientRepository ingredientRepo,
-                              MedicationRepository medicationRepo) {
-        this.ingredientRepo = ingredientRepo;
-        this.medicationRepo = medicationRepo;
+    public CatalogServiceImpl(
+            ActiveIngredientRepository ingredientRepository,
+            MedicationRepository medicationRepository) {
+        this.ingredientRepository = ingredientRepository;
+        this.medicationRepository = medicationRepository;
     }
 
-    // -------------------- ActiveIngredient --------------------
     @Override
     public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-        if (ingredient == null || ingredient.getName() == null || ingredient.getName().isBlank()) {
-            throw new IllegalArgumentException("Ingredient name must not be empty");
-        }
-
-        String normalizedName = ingredient.getName().trim();
-
-        if (ingredientRepo.existsByName(normalizedName)) {
-            throw new IllegalArgumentException("Ingredient already exists");
-        }
-
-        ingredient.setName(normalizedName);
-        return ingredientRepo.save(ingredient);
+        ingredient.setId(null); // 🔐 safety
+        return ingredientRepository.save(ingredient);
     }
 
-    @Override
-    public List<ActiveIngredient> getAllIngredients() {
-        return ingredientRepo.findAll();
-    }
-
-    // -------------------- Medication --------------------
     @Override
     public Medication addMedication(Medication medication) {
-        if (medication == null || medication.getName() == null || medication.getName().isBlank()) {
-            throw new IllegalArgumentException("Medication name must not be empty");
-        }
 
-        if (medication.getIngredients() == null || medication.getIngredients().isEmpty()) {
-            throw new IllegalArgumentException("Medication must have at least one ingredient");
-        }
+        Set<ActiveIngredient> managedIngredients = new HashSet<>();
 
-        Set<ActiveIngredient> safeIngredients = new HashSet<>();
         for (ActiveIngredient ing : medication.getIngredients()) {
-            ActiveIngredient dbIngredient = ingredientRepo.findById(ing.getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found: " + ing.getId()));
-            safeIngredients.add(dbIngredient);
+
+            // ✅ Treat id = 0 as NEW
+            if (ing.getId() == null || ing.getId() <= 0) {
+                ing.setId(null);
+                managedIngredients.add(ingredientRepository.save(ing));
+            } else {
+                managedIngredients.add(
+                        ingredientRepository.findById(ing.getId())
+                                .orElseThrow(() ->
+                                        new RuntimeException(
+                                                "Ingredient not found: " + ing.getId()))
+                );
+            }
         }
 
-        medication.setIngredients(safeIngredients);
-        return medicationRepo.save(medication);
+        medication.setIngredients(managedIngredients);
+        medication.setId(null); // 🔐 safety
+        return medicationRepository.save(medication);
     }
 
     @Override
     public List<Medication> getAllMedications() {
-        return medicationRepo.findAll();
+        return medicationRepository.findAll();
     }
 }
