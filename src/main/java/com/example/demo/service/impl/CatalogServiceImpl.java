@@ -27,7 +27,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-        ingredient.setId(null); // 🔐 safety
+        ingredient.setId(null); 
         return ingredientRepository.save(ingredient);
     }
 
@@ -53,7 +53,7 @@ public class CatalogServiceImpl implements CatalogService {
         }
 
         medication.setIngredients(managedIngredients);
-        medication.setId(null); // 🔐 safety
+        medication.setId(null); 
         return medicationRepository.save(medication);
     }
 
