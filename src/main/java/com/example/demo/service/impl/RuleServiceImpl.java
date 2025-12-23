@@ -6,35 +6,23 @@ import com.example.demo.service.RuleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RuleServiceImpl implements RuleService {
 
-    private final InteractionRuleRepository repository;
+    private final InteractionRuleRepository ruleRepository;
 
-    public RuleServiceImpl(InteractionRuleRepository repository) {
-        this.repository = repository;
+    public RuleServiceImpl(InteractionRuleRepository ruleRepository) {
+        this.ruleRepository = ruleRepository;
     }
 
     @Override
     public InteractionRule saveRule(InteractionRule rule) {
-        return repository.save(rule);
+        return ruleRepository.save(rule);
     }
 
     @Override
     public List<InteractionRule> getAllRules() {
-        return repository.findAll();
-    }
-
-    @Override
-    public InteractionRule getRuleById(Long id) {
-        Optional<InteractionRule> rule = repository.findById(id);
-        return rule.orElse(null);
-    }
-
-    @Override
-    public void deleteRule(Long id) {
-        repository.deleteById(id);
+        return ruleRepository.findAll();
     }
 }

@@ -17,33 +17,17 @@ public class RuleController {
         this.ruleService = ruleService;
     }
 
-    // Create
+    // POST: Create new InteractionRule
     @PostMapping
     public ResponseEntity<InteractionRule> createRule(@RequestBody InteractionRule rule) {
         InteractionRule savedRule = ruleService.saveRule(rule);
         return ResponseEntity.ok(savedRule);
     }
 
-    // Read all
+    // GET: Retrieve all InteractionRules
     @GetMapping
     public ResponseEntity<List<InteractionRule>> getAllRules() {
-        return ResponseEntity.ok(ruleService.getAllRules());
-    }
-
-    // Read by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<InteractionRule> getRuleById(@PathVariable Long id) {
-        InteractionRule rule = ruleService.getRuleById(id);
-        if (rule == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(rule);
-    }
-
-    // Delete
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRule(@PathVariable Long id) {
-        ruleService.deleteRule(id);
-        return ResponseEntity.noContent().build();
+        List<InteractionRule> rules = ruleService.getAllRules();
+        return ResponseEntity.ok(rules);
     }
 }
