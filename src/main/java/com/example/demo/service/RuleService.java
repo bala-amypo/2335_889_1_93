@@ -4,10 +4,7 @@ import com.example.demo.model.InteractionRule;
 import java.util.List;
 
 public interface RuleService {
-
     InteractionRule save(InteractionRule rule);
-
     List<InteractionRule> findAll();
-
     void deleteRule(Long id);
 }

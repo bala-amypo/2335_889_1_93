@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rules")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // allow all origins temporarily
 public class RuleController {
 
     private final RuleService ruleService;
