@@ -1,59 +1,59 @@
-package com.example.demo.config;
+// package com.example.demo.config;
 
-import com.example.demo.security.CustomUserDetailsService;
-import com.example.demo.security.JwtAuthenticationFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import com.example.demo.security.CustomUserDetailsService;
+// import com.example.demo.security.JwtAuthenticationFilter;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
+// import org.springframework.security.authentication.AuthenticationManager;
+// import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+// import org.springframework.security.crypto.password.PasswordEncoder;
+// import org.springframework.security.web.SecurityFilterChain;
+// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
-@Configuration
-public class SecurityConfig {
+// @Configuration
+// public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+//     private final CustomUserDetailsService userDetailsService;
+//     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService,
-                          JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+//     public SecurityConfig(CustomUserDetailsService userDetailsService,
+//                           JwtAuthenticationFilter jwtAuthenticationFilter) {
+//         this.userDetailsService = userDetailsService;
+//         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+//     }
 
-    // Password encoder bean
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//     // Password encoder bean
+//     @Bean
+//     public PasswordEncoder passwordEncoder() {
+//         return new BCryptPasswordEncoder();
+//     }
 
-    // Authentication manager bean
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+//     // Authentication manager bean
+//     @Bean
+//     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+//         return configuration.getAuthenticationManager();
+//     }
 
-    // Security filter chain
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // disable CSRF
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/**",          // allow auth endpoints
-                    "/swagger-ui/**",     // allow swagger UI
-                    "/v3/api-docs/**",     // allow OpenAPI docs
-                    "/catalog/**",
-                    "/rules/**",
-                    "/interact/**"
-                ).permitAll()
-                // .anyRequest().authenticated() // all other endpoints require JWT
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//     // Security filter chain
+//     @Bean
+//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//         http
+//             .csrf(csrf -> csrf.disable()) // disable CSRF
+//             .authorizeHttpRequests(auth -> auth
+//                 .requestMatchers(
+//                     "/auth/**",          // allow auth endpoints
+//                     "/swagger-ui/**",     // allow swagger UI
+//                     "/v3/api-docs/**",     // allow OpenAPI docs
+//                     "/catalog/**",
+//                     "/rules/**",
+//                     "/interact/**"
+//                 ).permitAll()
+//                 // .anyRequest().authenticated() // all other endpoints require JWT
+//             )
+//             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
-}
+//         return http.build();
+//     }
+// }
