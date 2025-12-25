@@ -1,56 +1,52 @@
 // package com.example.demo.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.demo.security.JwtUtil;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Authentication", description = "User registration and login")
 public class AuthController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // ---------------- POST /auth/register ----------------
-    @Operation(summary = "Register a new user")
-    @ApiResponse(responseCode = "201", description = "User registered successfully")
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public AuthResponse register(@RequestBody AuthRequest request) {
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole() != null ? request.getRole() : "USER");
+
         User savedUser = userService.registerUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        String token = jwtUtil.generateToken(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
+
+        return new AuthResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
+                savedUser.getRole(), token);
     }
 
-    // ---------------- POST /auth/login ----------------
-    @Operation(summary = "User login")
-    @ApiResponse(responseCode = "200", description = "Login successful")
-    @ApiResponse(responseCode = "401", description = "Invalid credentials")
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User request) {
+    public AuthResponse login(@RequestBody AuthRequest request) {
+        User user = userService.findByEmail(request.getEmail());
 
-        try {
-            User user = userService.findByEmail(request.getEmail());
-
-            if (!user.getPassword().equals(request.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("Invalid email or password");
-            }
-
-            return ResponseEntity.ok("Login successful for user: " + user.getEmail());
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid email or password");
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
         }
+
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
+        return new AuthResponse(user.getId(), user.getName(), user.getEmail(),
+                user.getRole(), token);
     }
 }
