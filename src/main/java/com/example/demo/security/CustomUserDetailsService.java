@@ -1,4 +1,4 @@
- package com.example.demo.security;
+package com.example.demo.security;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -20,6 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        return new CustomUserDetails(user); // ✅ Return CustomUserDetails
+        return new CustomUserDetails(user);
     }
 }

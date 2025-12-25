@@ -1,15 +1,16 @@
- package com.example.demo.service;
+package com.example.demo.service;
 
 import com.example.demo.model.User;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface UserService {
+    User saveUser(User user);
 
-    // Registers a new user, returns saved user
-    User registerUser(User user);
+    Optional<User> findByEmail(String email);
 
-    // Finds a user by email, throws exception if not found
-    User findByEmail(String email);
-
-    // Optional: check if a user already exists by email
     boolean existsByEmail(String email);
+
+    List<User> getAllUsers();
 }
