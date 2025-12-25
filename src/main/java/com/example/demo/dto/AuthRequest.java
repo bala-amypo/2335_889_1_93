@@ -1,11 +1,11 @@
-package com.example.demo.dto;
+// package com.example.demo.dto;
 
 public class AuthRequest {
 
-    private String name; // for registration
+    private String name;    // only for registration
     private String email;
     private String password;
-    private String role; // optional: USER or ADMIN
+    private String role;    // optional, default "USER"
 
     public AuthRequest() {}
 
