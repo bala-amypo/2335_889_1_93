@@ -1,11 +1,7 @@
-package com.example.demo.model;
+// package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "interaction_rules")
@@ -15,24 +11,36 @@ public class InteractionRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ingredient_a_id")
+    @JsonIgnoreProperties({"medications", "interactionRulesAsA", "interactionRulesAsB"})
     private ActiveIngredient ingredientA;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ingredient_b_id")
+    @JsonIgnoreProperties({"medications", "interactionRulesAsA", "interactionRulesAsB"})
     private ActiveIngredient ingredientB;
 
     private String severity;
     private String description;
 
+    // ✅ Required by JPA, Swagger, Tests
     public InteractionRule() {}
 
-    public InteractionRule(ActiveIngredient a, ActiveIngredient b, String severity, String description) {
+    // ✅ Used in business logic & tests
+    public InteractionRule(
+            ActiveIngredient a,
+            ActiveIngredient b,
+            String severity,
+            String description
+    ) {
         this.ingredientA = a;
         this.ingredientB = b;
         this.severity = severity;
         this.description = description;
     }
 
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -72,6 +80,4 @@ public class InteractionRule {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
 }
