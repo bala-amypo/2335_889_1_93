@@ -1,4 +1,4 @@
-package com.example.demo.security;
+// package com.example.demo.security;
 
 import com.example.demo.model.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,9 +16,12 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    // Assign roles with ROLE_ prefix for Spring Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+        return Collections.singletonList(
+            new SimpleGrantedAuthority("ROLE_" + user.getRole())
+        );
     }
 
     @Override
@@ -31,27 +34,19 @@ public class CustomUserDetails implements UserDetails {
         return user.getEmail();
     }
 
+    // Always return true for simplicity; customize if needed
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 
-    public Long getUserId() {
-        return user.getId();
-    }
+    // Custom helper to access user ID
+    public Long getUserId() { return user.getId(); }
 }
