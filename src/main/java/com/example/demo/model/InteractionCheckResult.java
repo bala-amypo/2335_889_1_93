@@ -1,13 +1,8 @@
-package com.example.demo.model;
+// package com.example.demo.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "interaction_check_results")
@@ -17,23 +12,30 @@ public class InteractionCheckResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Comma-separated or JSON string of medication names
+    @Column(nullable = false)
     private String medications;
 
+    // Detailed interaction results (can be large)
     @Column(columnDefinition = "TEXT")
     private String interactions;
 
+    @Column(nullable = false)
     private LocalDateTime checkedAt;
 
+    // ✅ Required by JPA, Swagger, Tests
     public InteractionCheckResult() {
         this.checkedAt = LocalDateTime.now();
     }
 
+    // ✅ Used in services & tests
     public InteractionCheckResult(String medications, String interactions) {
         this.medications = medications;
         this.interactions = interactions;
         this.checkedAt = LocalDateTime.now();
     }
 
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -65,6 +67,4 @@ public class InteractionCheckResult {
     public void setCheckedAt(LocalDateTime checkedAt) {
         this.checkedAt = checkedAt;
     }
-
-    
 }
