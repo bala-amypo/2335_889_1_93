@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface UserService {
 
-    User registerUser(User user); // matches controller
+    User register(User user); // matches controller
 
     User findByEmail(String email); // unwrap Optional here
 
