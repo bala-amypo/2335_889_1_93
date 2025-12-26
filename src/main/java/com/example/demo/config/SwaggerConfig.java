@@ -1,7 +1,8 @@
- package com.example.demo.config;
+package com.example.demo.config;
 
-import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.*;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +13,32 @@ import java.util.List;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI openAPI() {
+
+        SecurityScheme jwtScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER)
+                .name("Authorization");
+
+        SecurityRequirement securityRequirement =
+                new SecurityRequirement().addList("bearerAuth");
+
+        Server customServer = new Server()
+                .url("https://9117.pro604cr.amypo.ai")
+                .description("Custom deployment server");
+
         return new OpenAPI()
                 .info(new Info()
-                        .title("AgriShare API")
-                        .version("1.0")
-                        .description("API documentation for AgriShare application"))
-                .servers(List.of(
-                        new Server().url("https://9313.pro604cr.amypo.ai") // change to your production URL when needed
-                ));
+                        .title("Drug Interaction Checker API")
+                        .description("API for checking drug interactions using active ingredients")
+                        .version("1.0.0")
+                )
+                .servers(List.of(customServer))
+                .components(new Components()
+                        .addSecuritySchemes("bearerAuth", jwtScheme)
+                )
+                .addSecurityItem(securityRequirement);
     }
 }
