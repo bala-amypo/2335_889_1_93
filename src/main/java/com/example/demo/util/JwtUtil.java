@@ -1,4 +1,4 @@
-package com.example.demo.security;
+ package com.example.demo.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,8 +16,11 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "my-super-secret-key-for-jwt-1234567890123456"; // must be 256-bit for HS256
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
+    private static final String SECRET_KEY =
+            "my-super-secret-key-for-jwt-1234567890123456"; // 256-bit key for HS256
+
+    private static final long EXPIRATION_TIME =
+            1000 * 60 * 60 * 10; // 10 hours
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -32,11 +35,11 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = Jwts.parserBuilder()
-                                  .setSigningKey(getSigningKey())
-                                  .build()
-                                  .parseClaimsJws(token)
-                                  .getBody();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         return claimsResolver.apply(claims);
     }
 
@@ -44,6 +47,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
         claims.put("userId", userId);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(email)
@@ -54,8 +58,8 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -64,19 +68,19 @@ public class JwtUtil {
 
     public String extractRole(String token) {
         Claims claims = Jwts.parserBuilder()
-                            .setSigningKey(getSigningKey())
-                            .build()
-                            .parseClaimsJws(token)
-                            .getBody();
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         return claims.get("role", String.class);
     }
 
     public Long extractUserId(String token) {
         Claims claims = Jwts.parserBuilder()
-                            .setSigningKey(getSigningKey())
-                            .build()
-                            .parseClaimsJws(token)
-                            .getBody();
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         return claims.get("userId", Long.class);
     }
 }
