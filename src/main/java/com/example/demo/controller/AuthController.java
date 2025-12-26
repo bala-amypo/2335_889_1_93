@@ -1,10 +1,10 @@
- package com.example.demo.controller;
+package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
-import com.example.demo.securit.JwtUtil;
+import com.example.demo.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,9 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService,
+                          JwtUtil jwtUtil,
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
@@ -24,6 +26,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public AuthResponse register(@RequestBody AuthRequest request) {
+
+        if (userService.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
@@ -31,22 +38,42 @@ public class AuthController {
         user.setRole(request.getRole() != null ? request.getRole() : "USER");
 
         User savedUser = userService.registerUser(user);
-        String token = jwtUtil.generateToken(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
+        String token = jwtUtil.generateToken(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
 
-        return new AuthResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
-                savedUser.getRole(), token);
+        return new AuthResponse(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getRole(),
+                token
+        );
     }
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
+
         User user = userService.findByEmail(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
-        return new AuthResponse(user.getId(), user.getName(), user.getEmail(),
-                user.getRole(), token);
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        return new AuthResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                token
+        );
     }
 }
