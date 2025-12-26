@@ -15,19 +15,23 @@ import com.example.demo.service.CatalogService;
 @Service
 public class CatalogServiceImpl implements CatalogService {
 
-    private final ActiveIngredientRepository ingredientRepository;
-    private final MedicationRepository medicationRepository;
+    private ActiveIngredientRepository ingredientRepository;
+    private MedicationRepository medicationRepository;
 
-    public CatalogServiceImpl(
-            ActiveIngredientRepository ingredientRepository,
-            MedicationRepository medicationRepository) {
+    // ✅ REQUIRED by test cases
+    public CatalogServiceImpl() {
+    }
+
+    // ✅ Used by Spring
+    public CatalogServiceImpl(ActiveIngredientRepository ingredientRepository,
+                              MedicationRepository medicationRepository) {
         this.ingredientRepository = ingredientRepository;
         this.medicationRepository = medicationRepository;
     }
 
     @Override
     public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-        ingredient.setId(null); 
+        ingredient.setId(null);
         return ingredientRepository.save(ingredient);
     }
 
@@ -36,24 +40,25 @@ public class CatalogServiceImpl implements CatalogService {
 
         Set<ActiveIngredient> managedIngredients = new HashSet<>();
 
-        for (ActiveIngredient ing : medication.getIngredients()) {
+        if (medication.getIngredients() != null) {
+            for (ActiveIngredient ing : medication.getIngredients()) {
 
-            
-            if (ing.getId() == null || ing.getId() <= 0) {
-                ing.setId(null);
-                managedIngredients.add(ingredientRepository.save(ing));
-            } else {
-                managedIngredients.add(
-                        ingredientRepository.findById(ing.getId())
-                                .orElseThrow(() ->
-                                        new RuntimeException(
-                                                "Ingredient not found: " + ing.getId()))
-                );
+                if (ing.getId() == null || ing.getId() <= 0) {
+                    ing.setId(null);
+                    managedIngredients.add(ingredientRepository.save(ing));
+                } else {
+                    managedIngredients.add(
+                            ingredientRepository.findById(ing.getId())
+                                    .orElseThrow(() ->
+                                            new RuntimeException(
+                                                    "Ingredient not found: " + ing.getId()))
+                    );
+                }
             }
         }
 
         medication.setIngredients(managedIngredients);
-        medication.setId(null); 
+        medication.setId(null);
         return medicationRepository.save(medication);
     }
 
