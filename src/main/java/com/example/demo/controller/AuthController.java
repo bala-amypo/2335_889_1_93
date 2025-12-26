@@ -38,7 +38,7 @@ public class AuthController {
         user.setRole(request.getRole() != null ? request.getRole() : "USER");
 
         // ✅ Using the corrected service method
-        User savedUser = userService.registerUser(user);
+        User savedUser = userService.register(user);
 
         String token = jwtUtil.generateToken(
                 savedUser.getId(),
