@@ -1,10 +1,8 @@
 package com.example.demo.model;
 
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "medications")
@@ -16,22 +14,35 @@ public class Medication {
 
     private String name;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     @JoinTable(
         name = "medication_ingredients",
         joinColumns = @JoinColumn(name = "medication_id"),
         inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    @JsonIgnoreProperties("medications") // Prevents Swagger infinite loop
     private Set<ActiveIngredient> ingredients = new HashSet<>();
 
-    public Medication() {}
-
-    public Medication(String name) {
-        this.name = name;
+    // ✅ No-arg constructor
+    public Medication() {
+        this.ingredients = new HashSet<>();
     }
 
-    // Getters & Setters
+    // ✅ Required by tests
+    public Medication(String name) {
+        this.name = name;
+        this.ingredients = new HashSet<>();
+    }
+
+    // ===== Helper methods (TESTS DEPEND ON THESE) =====
+    public void addIngredient(ActiveIngredient ingredient) {
+        this.ingredients.add(ingredient);
+    }
+
+    public void removeIngredient(ActiveIngredient ingredient) {
+        this.ingredients.remove(ingredient);
+    }
+
+    // ===== Getters & Setters =====
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -39,12 +50,7 @@ public class Medication {
     public void setName(String name) { this.name = name; }
 
     public Set<ActiveIngredient> getIngredients() { return ingredients; }
-    public void setIngredients(Set<ActiveIngredient> ingredients) { this.ingredients = ingredients; }
-
-    // ✅ Method required by test cases
-    public void addIngredient(ActiveIngredient ingredient) {
-        if (ingredient != null) {
-            ingredients.add(ingredient);
-        }
+    public void setIngredients(Set<ActiveIngredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }

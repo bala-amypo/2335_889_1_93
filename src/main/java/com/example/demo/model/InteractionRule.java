@@ -1,6 +1,5 @@
- package com.example.demo.model;
+package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,72 +10,53 @@ public class InteractionRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "ingredient_a_id")
-    @JsonIgnoreProperties({"medications", "interactionRulesAsA", "interactionRulesAsB"})
     private ActiveIngredient ingredientA;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "ingredient_b_id")
-    @JsonIgnoreProperties({"medications", "interactionRulesAsA", "interactionRulesAsB"})
     private ActiveIngredient ingredientB;
 
     private String severity;
+
+    @Column(length = 1000)
     private String description;
 
-    // ✅ Required by JPA, Swagger, Tests
+    // ✅ No-arg constructor
     public InteractionRule() {}
 
-    // ✅ Used in business logic & tests
+    // ✅ Required by tests
     public InteractionRule(
-            ActiveIngredient a,
-            ActiveIngredient b,
+            ActiveIngredient ingredientA,
+            ActiveIngredient ingredientB,
             String severity,
             String description
     ) {
-        this.ingredientA = a;
-        this.ingredientB = b;
+        this.ingredientA = ingredientA;
+        this.ingredientB = ingredientB;
         this.severity = severity;
         this.description = description;
     }
 
-    // Getters & Setters
-    public Long getId() {
-        return id;
-    }
+    // ===== Getters & Setters =====
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ActiveIngredient getIngredientA() {
-        return ingredientA;
-    }
-
+    public ActiveIngredient getIngredientA() { return ingredientA; }
     public void setIngredientA(ActiveIngredient ingredientA) {
         this.ingredientA = ingredientA;
     }
 
-    public ActiveIngredient getIngredientB() {
-        return ingredientB;
-    }
-
+    public ActiveIngredient getIngredientB() { return ingredientB; }
     public void setIngredientB(ActiveIngredient ingredientB) {
         this.ingredientB = ingredientB;
     }
 
-    public String getSeverity() {
-        return severity;
-    }
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
 
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
+    public String getDescription() { return description; }
     public void setDescription(String description) {
         this.description = description;
     }
