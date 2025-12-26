@@ -7,42 +7,45 @@ import java.util.Set;
 public class DrugInteractionChecker {
 
     /**
-     * Checks whether two drug ingredient lists have any interaction
-     * (i.e., common ingredient).
+     * Returns true if there is at least one common ingredient
+     * between drugA and drugB
      */
     public static boolean hasInteraction(List<String> drugA, List<String> drugB) {
+
         if (drugA == null || drugB == null) {
             return false;
         }
 
-        Set<String> set = new HashSet<>(drugA);
-        for (String ingredient : drugB) {
-            if (set.contains(ingredient)) {
-                return true;
+        for (String a : drugA) {
+            for (String b : drugB) {
+                if (a != null && a.equalsIgnoreCase(b)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * Returns the list of interacting ingredients.
+     * Returns all common ingredients between two drugs
      */
     public static Set<String> getInteractingIngredients(
             List<String> drugA,
             List<String> drugB) {
 
-        Set<String> interactions = new HashSet<>();
+        Set<String> result = new HashSet<>();
 
         if (drugA == null || drugB == null) {
-            return interactions;
+            return result;
         }
 
-        Set<String> set = new HashSet<>(drugA);
-        for (String ingredient : drugB) {
-            if (set.contains(ingredient)) {
-                interactions.add(ingredient);
+        for (String a : drugA) {
+            for (String b : drugB) {
+                if (a != null && a.equalsIgnoreCase(b)) {
+                    result.add(a);
+                }
             }
         }
-        return interactions;
+        return result;
     }
 }
