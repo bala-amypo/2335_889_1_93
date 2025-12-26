@@ -6,31 +6,26 @@ import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    // ✅ REQUIRED by test cases
-    public UserServiceImpl() {
-    }
-
-    // ✅ Used by Spring
+    // Constructor injection
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // ✅ EXACT method name expected by tests
     @Override
-    public User register(User user) {
+    public User registerUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
