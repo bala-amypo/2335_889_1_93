@@ -26,7 +26,7 @@ public class SwaggerConfig {
                 new SecurityRequirement().addList("bearerAuth");
 
         Server customServer = new Server()
-                .url("https://9117.pro604cr.amypo.ai")
+                .url("https://9313.pro604cr.amypo.ai/")
                 .description("Custom deployment server");
 
         return new OpenAPI()
