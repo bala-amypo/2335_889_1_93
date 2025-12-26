@@ -9,29 +9,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "SimpleHelloServlet", urlPatterns = "/hello")
+@WebServlet(name = "SimpleHelloServlet", urlPatterns = {"/hello-servlet"})
 public class SimpleHelloServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Set response type
-        resp.setContentType("text/plain");
+        // Set status and content type
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
 
-        // Get writer to send response
-        PrintWriter writer = resp.getWriter();
-
-        // Send response
-        writer.println("Hello from SimpleHelloServlet!");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        // Optional: Handle POST requests
-        resp.setContentType("text/plain");
-        PrintWriter writer = resp.getWriter();
-        writer.println("POST not supported in SimpleHelloServlet");
+        // Write response body
+        try (PrintWriter out = response.getWriter()) {
+            out.print("Hello from Simple Hello Servlet");
+        }
     }
 }

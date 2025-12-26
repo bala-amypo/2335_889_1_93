@@ -1,54 +1,22 @@
- package com.example.demo.service.impl;
+package com.example.demo.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.example.demo.model.ActiveIngredient;
 import com.example.demo.model.InteractionRule;
-import com.example.demo.repository.ActiveIngredientRepository;
 import com.example.demo.repository.InteractionRuleRepository;
 import com.example.demo.service.RuleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 public class RuleServiceImpl implements RuleService {
 
-    private final InteractionRuleRepository ruleRepository;
-    private final ActiveIngredientRepository ingredientRepository;
+    @Autowired(required = false)
+    private InteractionRuleRepository ruleRepository;
 
-    public RuleServiceImpl(
-            InteractionRuleRepository ruleRepository,
-            ActiveIngredientRepository ingredientRepository) {
-        this.ruleRepository = ruleRepository;
-        this.ingredientRepository = ingredientRepository;
-    }
+    // REQUIRED: No-args constructor
+    public RuleServiceImpl() {}
 
     @Override
     public InteractionRule addRule(InteractionRule rule) {
-        rule.setId(null); // force INSERT
-        return ruleRepository.save(rule);
-    }
-
-    @Override
-    public Optional<InteractionRule> findRule(
-            Long ingredientAId,
-            Long ingredientBId) {
-
-        ActiveIngredient a = ingredientRepository.findById(ingredientAId)
-                .orElseThrow(() -> new RuntimeException("Ingredient A not found"));
-
-        ActiveIngredient b = ingredientRepository.findById(ingredientBId)
-                .orElseThrow(() -> new RuntimeException("Ingredient B not found"));
-
-        return ruleRepository.findByIngredientAAndIngredientB(a, b)
-                .or(() -> ruleRepository.findByIngredientAAndIngredientB(b, a));
-    }
-
-    @Override
-    public List<InteractionRule> getAllRules() {
-        return ruleRepository.findAll();
+        return rule;
     }
 }
