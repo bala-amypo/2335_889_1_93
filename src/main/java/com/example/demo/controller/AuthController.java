@@ -37,7 +37,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole() != null ? request.getRole() : "USER");
 
+        // ✅ Using the corrected service method
         User savedUser = userService.registerUser(user);
+
         String token = jwtUtil.generateToken(
                 savedUser.getId(),
                 savedUser.getEmail(),
@@ -56,6 +58,7 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
 
+        // ✅ Using the corrected service method
         User user = userService.findByEmail(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
