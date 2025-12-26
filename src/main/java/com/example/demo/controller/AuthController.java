@@ -4,7 +4,7 @@ import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
-import com.example.demo.security.JwtUtil;
+import com.example.demo.securit.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
