@@ -19,7 +19,7 @@ public class SwaggerConfig {
                         .version("1.0")
                         .description("API documentation for AgriShare application"))
                 .servers(List.of(
-                        new Server().url("http://localhost:8080") // change to your production URL when needed
+                        new Server().url("https://9313.pro604cr.amypo.ai") // change to your production URL when needed
                 ));
     }
 }
