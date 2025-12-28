@@ -40,34 +40,103 @@
 //         return http.build();
 //     }
 // }
-package com.example.demo.service.impl;
+package com.example.demo.config;
 
-import com.example.demo.model.ActiveIngredient;
-import com.example.demo.model.Medication;
-import com.example.demo.service.CatalogService;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.ArrayList;
-import java.util.List;
+@Configuration
+public class SecurityConfig {
 
-@Service
-public class CatalogServiceImpl implements CatalogService {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    
-    public CatalogServiceImpl() {}
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html"
+                ).permitAll()
+                .anyRequest().permitAll()
+            );
 
-    @Override
-    public ActiveIngredient addIngredient(ActiveIngredient ingredient) {
-        return ingredient;
-    }
-
-    @Override
-    public Medication addMedication(Medication medication) {
-        return medication;
-    }
-
-    @Override
-    public List<Medication> getAllMedications() {
-        return new ArrayList<>();
+        return http.build();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// package com.example.demo.config;
+
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
+// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import org.springframework.security.web.SecurityFilterChain;
+
+// @Configuration
+// public class SecurityConfig {
+
+//     @Bean
+//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//         http
+//             .csrf(csrf -> csrf.disable())
+//             .authorizeHttpRequests(auth -> auth
+//                 .requestMatchers(
+//                     "/swagger-ui/**",
+//                     "/v3/api-docs/**",
+//                     "/h2-console/**"
+//                 ).permitAll()
+//                 .anyRequest().permitAll()
+//             )
+//             .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+
+//         return http.build();
+//     }
+// }
+
+
+
+// package com.example.demo.security;
+
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
+// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import org.springframework.security.web.SecurityFilterChain;
+
+// @Configuration
+// public class SecurityConfig {
+
+//     @Bean
+//     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//         http
+//             .csrf(csrf -> csrf.disable())
+//             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
+//         return http.build();
+//     }
+// }
